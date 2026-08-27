@@ -38,6 +38,19 @@ window.WOLLOHY_PLAYGROUND = [
     order: 10
   },
   {
+    id: "neon-pulse",
+    title: "NEON PULSE",
+    kicker: "RHYTHM ARCADE",
+    description: "Collect cyan notes, dodge pink hazards, build a combo, and optionally let a track or microphone drive the field density.",
+    url: "toys/neon-pulse.html",
+    tags: ["game", "arcade", "audio-reactive"],
+    accent: "magenta",
+    featured: true,
+    enabled: true,
+    embed: true,
+    order: 20
+  },
+  {
     id: "aetheria",
     title: "AETHERIA",
     kicker: "AUDIO-VISUAL ECOSYSTEM",
@@ -45,10 +58,10 @@ window.WOLLOHY_PLAYGROUND = [
     url: "toys/aetheria.html",
     tags: ["generative", "game", "world"],
     accent: "magenta",
-    featured: true,
+    featured: false,
     enabled: false,
     embed: true,
-    order: 20
+    order: 30
   },
   {
     id: "vector-soup",
@@ -58,10 +71,10 @@ window.WOLLOHY_PLAYGROUND = [
     url: "toys/vector-soup.html",
     tags: ["generative", "system", "instrument"],
     accent: "green",
-    featured: true,
+    featured: false,
     enabled: false,
     embed: true,
-    order: 30
+    order: 40
   },
   {
     id: "cosmic-fluid",
@@ -74,7 +87,7 @@ window.WOLLOHY_PLAYGROUND = [
     featured: false,
     enabled: false,
     embed: true,
-    order: 40
+    order: 50
   },
   {
     id: "hyper-soup",
@@ -87,20 +100,7 @@ window.WOLLOHY_PLAYGROUND = [
     featured: false,
     enabled: false,
     embed: true,
-    order: 50
-  },
-  {
-    id: "neon-pulse",
-    title: "NEON PULSE",
-    kicker: "RHYTHM ARCADE",
-    description: "The clearest arcade branch: collect notes, dodge hazards, build multipliers, and let a track or microphone drive the field.",
-    url: "toys/neon-pulse.html",
-    tags: ["game", "arcade", "audio-reactive"],
-    accent: "magenta",
-    featured: false,
-    enabled: false,
-    embed: true,
-    order: 70
+    order: 60
   },
   {
     id: "generative-studio",

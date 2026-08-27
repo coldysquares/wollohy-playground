@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#030308">
+<title>Neon Pulse</title>
+<style>
+:root{--bg:#030308;--panel:#0a0a12;--line:#30303d;--text:#f4f4f6;--muted:#8e8ea0;--cyan:#39f5ff;--pink:#ff2d7a;--yellow:#f7ff2d}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}button,input{font:inherit}button:focus-visible,input:focus-visible{outline:3px solid var(--yellow);outline-offset:3px}canvas{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none}.hud{position:fixed;z-index:5;left:16px;right:16px;top:16px;display:grid;grid-template-columns:1fr auto;gap:16px;pointer-events:none}.brand{pointer-events:none}.kicker{font-size:10px;letter-spacing:.16em;color:var(--cyan);font-weight:800}.brand h1{margin:2px 0 0;font-family:Impact,Haettenschweiler,'Arial Narrow Bold',sans-serif;font-size:clamp(36px,7vw,86px);line-height:.82;letter-spacing:.02em}.stats{display:grid;grid-template-columns:repeat(4,auto);border:2px solid var(--line);background:var(--panel);pointer-events:auto}.stat{padding:10px 14px;border-left:1px solid var(--line);min-width:92px}.stat:first-child{border-left:0}.stat span{display:block;font-size:9px;letter-spacing:.12em;color:var(--muted)}.stat b{display:block;margin-top:3px;font-size:17px}.stat .cyan{color:var(--cyan)}.stat .pink{color:var(--pink)}.stat .yellow{color:var(--yellow)}.deck{position:fixed;z-index:6;left:16px;right:16px;bottom:16px;display:flex;align-items:flex-end;justify-content:space-between;gap:12px;pointer-events:none}.controls{pointer-events:auto;display:flex;gap:8px;flex-wrap:wrap}.btn,.file-label{border:2px solid var(--line);background:var(--panel);color:var(--text);padding:10px 12px;min-height:42px;border-radius:0;font-weight:800;font-size:11px;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}.btn:hover,.file-label:hover{border-color:var(--text)}.btn.primary{background:var(--cyan);color:var(--bg);border-color:var(--cyan)}.btn.danger{color:var(--pink);border-color:var(--pink)}.file-label input{position:absolute;opacity:0;pointer-events:none}.hint{pointer-events:none;max-width:450px;border-top:2px solid var(--line);padding-top:8px;color:var(--muted);font-size:11px;line-height:1.5;text-align:right}.overlay{position:fixed;z-index:20;inset:0;display:grid;place-items:center;background:rgba(3,3,8,.94);padding:20px}.overlay.hidden{display:none}.card{width:min(620px,100%);border:4px solid var(--text);background:var(--bg);box-shadow:10px 10px 0 var(--pink);padding:28px}.eyebrow{font-size:10px;font-weight:800;letter-spacing:.16em;color:var(--yellow)}.card h2{margin:8px 0 10px;font-family:Impact,Haettenschweiler,'Arial Narrow Bold',sans-serif;font-size:clamp(58px,12vw,118px);line-height:.78;letter-spacing:.01em;color:var(--cyan)}.card p{margin:0 0 18px;max-width:52ch;color:#c3c3cf;line-height:1.55}.rules{display:grid;grid-template-columns:1fr 1fr;border-top:2px solid var(--line);border-bottom:2px solid var(--line);margin:18px 0}.rule{padding:12px 0;font-size:11px}.rule+ .rule{border-left:1px solid var(--line);padding-left:14px}.rule b{display:block;font-size:13px;margin-bottom:3px}.rule.good b{color:var(--cyan)}.rule.bad b{color:var(--pink)}.start-actions{display:flex;gap:8px;flex-wrap:wrap}.final{font-size:12px;color:var(--muted);margin-top:12px}.audio-state{position:fixed;z-index:7;right:16px;bottom:82px;font-size:10px;letter-spacing:.08em;color:var(--muted);background:var(--panel);border:1px solid var(--line);padding:6px 8px;text-transform:uppercase;pointer-events:none}.audio-state strong{color:var(--cyan)}
+@media(max-width:760px){.hud{grid-template-columns:1fr}.stats{grid-template-columns:repeat(4,1fr)}.stat{min-width:0;padding:8px 7px}.stat b{font-size:13px}.brand h1{font-size:46px}.deck{bottom:10px;left:10px;right:10px}.hint{display:none}.audio-state{right:10px;bottom:64px}.controls{gap:6px}.btn,.file-label{padding:8px 9px;min-height:38px;font-size:10px}.card{padding:22px;box-shadow:7px 7px 0 var(--pink)}.rules{grid-template-columns:1fr}.rule+.rule{border-left:0;border-top:1px solid var(--line);padding-left:0}}
+</style>
+</head>
+<body>
+<canvas id="game" aria-label="Neon Pulse game field"></canvas>
+<div class="hud" aria-live="polite">
+  <div class="brand"><div class="kicker">WOLLOHY PLAYGROUND // RHYTHM ARCADE</div><h1>NEON PULSE</h1></div>
+  <div class="stats">
+    <div class="stat"><span>SCORE</span><b id="score" class="cyan">00000</b></div>
+    <div class="stat"><span>COMBO</span><b id="combo">x1</b></div>
+    <div class="stat"><span>INTEGRITY</span><b id="hp" class="pink">100%</b></div>
+    <div class="stat"><span>BEST</span><b id="best" class="yellow">00000</b></div>
+  </div>
+</div>
+<div class="deck">
+  <div class="controls">
+    <button class="btn primary" id="pauseBtn">PAUSE</button>
+    <label class="file-label">LOAD TRACK<input id="fileInput" type="file" accept="audio/*"></label>
+    <button class="btn" id="micBtn">MIC</button>
+    <button class="btn danger" id="resetBtn">RESET</button>
+  </div>
+  <div class="hint">MOVE: mouse / touch / ← → / A D<br>Collect cyan notes. Avoid pink hazards. Audio increases density but is optional.</div>
+</div>
+<div class="audio-state" id="audioState">AUDIO: <strong>SYNTH ONLY</strong></div>
+<audio id="audio" loop></audio>
+<div class="overlay" id="startOverlay">
+  <section class="card">
+    <div class="eyebrow">PLAYABLE AUDIO FIELD // RESTORED BUILD 01</div>
+    <h2>NEON<br>PULSE</h2>
+    <p>Move through the field, collect cyan notes, dodge pink hazards, and build a combo. Load a track or microphone if you want the spawn pattern to react to sound.</p>
+    <div class="rules">
+      <div class="rule good"><b>CYAN = + SCORE</b>Keep a streak alive to increase the multiplier.</div>
+      <div class="rule bad"><b>PINK = - INTEGRITY</b>Three or four ugly collisions will end a run.</div>
+    </div>
+    <div class="start-actions"><button class="btn primary" id="startBtn">START RUN</button><label class="file-label">START WITH TRACK<input id="startFile" type="file" accept="audio/*"></label></div>
+  </section>
+</div>
+<div class="overlay hidden" id="gameOverOverlay">
+  <section class="card">
+    <div class="eyebrow">RUN COMPLETE</div>
+    <h2 style="color:var(--pink)">PULSE<br>LOST</h2>
+    <p id="finalText">Score 0.</p>
+    <div class="start-actions"><button class="btn primary" id="againBtn">PLAY AGAIN</button></div>
+    <div class="final">Your best score is saved only in this browser.</div>
+  </section>
+</div>
+<script>
+const canvas=document.getElementById('game');const ctx=canvas.getContext('2d');const audioEl=document.getElementById('audio');
+const ui={score:document.getElementById('score'),combo:document.getElementById('combo'),hp:document.getElementById('hp'),best:document.getElementById('best'),audio:document.getElementById('audioState'),start:document.getElementById('startOverlay'),over:document.getElementById('gameOverOverlay'),final:document.getElementById('finalText'),pause:document.getElementById('pauseBtn')};
+let W=0,H=0,DPR=1,last=0,spawnClock=0,hazardClock=0,beat=0,shake=0;let audioCtx=null,analyser=null,audioData=null,inputNode=null,micStream=null;let running=false,paused=false;
+const player={x:0,y:0,targetX:0,r:15};let notes=[],hazards=[],sparks=[],floaters=[];
+const state={score:0,combo:1,hp:100,best:Number(localStorage.getItem('neon-pulse-best')||0)};ui.best.textContent=pad(state.best);
+function pad(n){return String(Math.max(0,Math.floor(n))).padStart(5,'0')}
+function resize(){DPR=Math.min(2,devicePixelRatio||1);W=innerWidth;H=innerHeight;canvas.width=Math.floor(W*DPR);canvas.height=Math.floor(H*DPR);canvas.style.width=W+'px';canvas.style.height=H+'px';ctx.setTransform(DPR,0,0,DPR,0,0);player.y=H*.78;if(!player.x)player.x=player.targetX=W/2}
+addEventListener('resize',resize);resize();
+function ensureAudio(){if(audioCtx)return;audioCtx=new(window.AudioContext||window.webkitAudioContext)();analyser=audioCtx.createAnalyser();analyser.fftSize=128;audioData=new Uint8Array(analyser.frequencyBinCount);analyser.connect(audioCtx.destination)}
+function teardownInput(){audioEl.pause();audioEl.removeAttribute('src');if(inputNode){try{inputNode.disconnect()}catch{}inputNode=null}if(micStream){micStream.getTracks().forEach(t=>t.stop());micStream=null}}
+async function useFile(file){if(!file)return;ensureAudio();await audioCtx.resume();teardownInput();audioEl.src=URL.createObjectURL(file);inputNode=audioCtx.createMediaElementSource(audioEl);inputNode.connect(analyser);await audioEl.play();ui.audio.innerHTML='AUDIO: <strong>TRACK REACTIVE</strong>'}
+async function useMic(){ensureAudio();await audioCtx.resume();teardownInput();try{micStream=await navigator.mediaDevices.getUserMedia({audio:true,video:false});inputNode=audioCtx.createMediaStreamSource(micStream);inputNode.connect(analyser);ui.audio.innerHTML='AUDIO: <strong>MIC REACTIVE</strong>'}catch{ui.audio.innerHTML='AUDIO: <strong>MIC BLOCKED</strong>'}}
+function energy(){if(!analyser||!audioData)return 0;analyser.getByteFrequencyData(audioData);let sum=0;for(let i=0;i<audioData.length;i++)sum+=audioData[i];return sum/(audioData.length*255)}
+function ping(freq=660,dur=.09,type='sine',vol=.05){ensureAudio();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(vol,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+dur);o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+dur)}
+function spawnNote(){notes.push({x:30+Math.random()*(W-60),y:-20,r:7+Math.random()*5,v:120+Math.random()*80,phase:Math.random()*6.28})}
+function spawnHazard(){hazards.push({x:35+Math.random()*(W-70),y:-30,r:12+Math.random()*7,v:150+Math.random()*95,rot:Math.random()*6.28})}
+function burst(x,y,color,count=16){for(let i=0;i<count;i++){const a=Math.random()*Math.PI*2,s=50+Math.random()*180;sparks.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s,life:1,color})}}
+function floater(text,x,y,color){floaters.push({text,x,y,life:1,color})}
+function resetRun(){state.score=0;state.combo=1;state.hp=100;notes=[];hazards=[];sparks=[];floaters=[];spawnClock=0;hazardClock=0;player.x=player.targetX=W/2;paused=false;ui.pause.textContent='PAUSE';syncUI()}
+function startRun(){ensureAudio();audioCtx.resume();resetRun();running=true;ui.start.classList.add('hidden');ui.over.classList.add('hidden')}
+function endRun(){running=false;paused=false;if(state.score>state.best){state.best=state.score;localStorage.setItem('neon-pulse-best',state.best)}ui.final.textContent=`Score ${state.score}. Best ${state.best}.`;syncUI();ui.over.classList.remove('hidden')}
+function syncUI(){ui.score.textContent=pad(state.score);ui.combo.textContent='x'+state.combo;ui.hp.textContent=Math.max(0,state.hp)+'%';ui.best.textContent=pad(state.best)}
+function collide(a,b){return Math.hypot(a.x-b.x,a.y-b.y)<a.r+b.r}
+function update(dt){if(!running||paused)return;const e=energy();beat=Math.max(beat*.9,e);player.x+=(player.targetX-player.x)*Math.min(1,dt*12);player.x=Math.max(player.r+8,Math.min(W-player.r-8,player.x));spawnClock+=dt;hazardClock+=dt;const noteRate=.58-Math.min(.24,e*.32);const hazardRate=1.1-Math.min(.35,e*.38);if(spawnClock>noteRate){spawnClock=0;spawnNote();if(e>.48&&Math.random()<.4)spawnNote()}if(hazardClock>hazardRate){hazardClock=0;spawnHazard();if(e>.62&&Math.random()<.2)spawnHazard()}
+for(let i=notes.length-1;i>=0;i--){const n=notes[i];n.y+=n.v*dt;n.phase+=dt*6;if(collide(player,n)){const pts=10*state.combo;state.score+=pts;state.combo=Math.min(12,state.combo+1);burst(n.x,n.y,'#39f5ff',13);floater('+'+pts,n.x,n.y,'#39f5ff');ping(520+state.combo*35,.08,'sine',.045);notes.splice(i,1)}else if(n.y>H+30){notes.splice(i,1);state.combo=1}}
+for(let i=hazards.length-1;i>=0;i--){const h=hazards[i];h.y+=h.v*dt;h.rot+=dt*2;if(collide(player,h)){state.hp-=28;state.combo=1;shake=12;burst(h.x,h.y,'#ff2d7a',24);floater('-28',h.x,h.y,'#ff2d7a');ping(90,.18,'sawtooth',.06);hazards.splice(i,1);if(state.hp<=0){endRun();break}}else if(h.y>H+40)hazards.splice(i,1)}
+for(let i=sparks.length-1;i>=0;i--){const p=sparks[i];p.x+=p.vx*dt;p.y+=p.vy*dt;p.vx*=.98;p.vy*=.98;p.life-=dt*1.8;if(p.life<=0)sparks.splice(i,1)}for(let i=floaters.length-1;i>=0;i--){const f=floaters[i];f.y-=40*dt;f.life-=dt;if(f.life<=0)floaters.splice(i,1)}syncUI()}
+function drawGrid(){const pulse=beat*.25;ctx.fillStyle=`rgb(${3+Math.floor(pulse*10)},${3+Math.floor(pulse*18)},${8+Math.floor(pulse*28)})`;ctx.fillRect(0,0,W,H);ctx.strokeStyle='rgba(57,245,255,.07)';ctx.lineWidth=1;const gap=48;for(let x=(performance.now()*.015)%gap;x<W;x+=gap){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke()}for(let y=0;y<H;y+=gap){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()}const grad=ctx.createLinearGradient(0,H*.45,0,H);grad.addColorStop(0,'rgba(3,3,8,0)');grad.addColorStop(1,'rgba(255,45,122,.08)');ctx.fillStyle=grad;ctx.fillRect(0,H*.45,W,H*.55)}
+function render(){ctx.save();if(shake>0){ctx.translate((Math.random()-.5)*shake,(Math.random()-.5)*shake);shake*=.84}drawGrid();for(const n of notes){ctx.save();ctx.translate(n.x,n.y);const rr=n.r+Math.sin(n.phase)*2;ctx.shadowBlur=18;ctx.shadowColor='#39f5ff';ctx.fillStyle='#39f5ff';ctx.beginPath();ctx.arc(0,0,rr,0,Math.PI*2);ctx.fill();ctx.restore()}for(const h of hazards){ctx.save();ctx.translate(h.x,h.y);ctx.rotate(h.rot);ctx.shadowBlur=16;ctx.shadowColor='#ff2d7a';ctx.fillStyle='#ff2d7a';ctx.beginPath();ctx.moveTo(0,-h.r);ctx.lineTo(h.r,0);ctx.lineTo(0,h.r);ctx.lineTo(-h.r,0);ctx.closePath();ctx.fill();ctx.restore()}for(const p of sparks){ctx.globalAlpha=Math.max(0,p.life);ctx.fillStyle=p.color;ctx.fillRect(p.x,p.y,3,3)}ctx.globalAlpha=1;for(const f of floaters){ctx.globalAlpha=Math.max(0,f.life);ctx.fillStyle=f.color;ctx.font='800 13px ui-monospace,monospace';ctx.fillText(f.text,f.x+8,f.y)}ctx.globalAlpha=1;ctx.save();ctx.translate(player.x,player.y);ctx.shadowBlur=26;ctx.shadowColor='#f7ff2d';ctx.strokeStyle='#f7ff2d';ctx.lineWidth=3;ctx.beginPath();ctx.arc(0,0,player.r,0,Math.PI*2);ctx.stroke();ctx.fillStyle='#fff';ctx.fillRect(-3,-3,6,6);ctx.restore();ctx.restore()}
+function loop(t){const dt=Math.min(.033,(t-last)/1000||0);last=t;update(dt);render();requestAnimationFrame(loop)}requestAnimationFrame(loop);
+canvas.addEventListener('pointerdown',e=>{player.targetX=e.clientX});canvas.addEventListener('pointermove',e=>{if(e.pointerType==='mouse'||e.buttons)player.targetX=e.clientX});
+const keys=new Set();addEventListener('keydown',e=>{keys.add(e.key.toLowerCase());if(['arrowleft','arrowright','a','d',' '].includes(e.key.toLowerCase()))e.preventDefault();if(e.key===' '&&running){paused=!paused;ui.pause.textContent=paused?'RESUME':'PAUSE'}});addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));setInterval(()=>{if(!running||paused)return;if(keys.has('arrowleft')||keys.has('a'))player.targetX-=26;if(keys.has('arrowright')||keys.has('d'))player.targetX+=26},16);
+document.getElementById('startBtn').addEventListener('click',startRun);document.getElementById('againBtn').addEventListener('click',startRun);document.getElementById('pauseBtn').addEventListener('click',()=>{if(!running)return;paused=!paused;ui.pause.textContent=paused?'RESUME':'PAUSE'});document.getElementById('resetBtn').addEventListener('click',()=>{if(running)startRun();else resetRun()});document.getElementById('micBtn').addEventListener('click',useMic);document.getElementById('fileInput').addEventListener('change',e=>useFile(e.target.files[0]));document.getElementById('startFile').addEventListener('change',async e=>{await useFile(e.target.files[0]);startRun()});
+resetRun();
+</script>
+</body>
+</html>

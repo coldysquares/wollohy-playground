@@ -51,6 +51,19 @@ window.WOLLOHY_PLAYGROUND = [
     order: 20
   },
   {
+    id: "vector-soup",
+    title: "VECTOR SOUP",
+    kicker: "EVOLUTIONARY SYNTH",
+    description: "Alter nutrients, lifespan, and mutation while autonomous organisms forage, reproduce, inherit traits, drift, and become a generative synth.",
+    url: "toys/vector-soup.html",
+    tags: ["generative", "system", "instrument"],
+    accent: "green",
+    featured: true,
+    enabled: true,
+    embed: true,
+    order: 30
+  },
+  {
     id: "aetheria",
     title: "AETHERIA",
     kicker: "AUDIO-VISUAL ECOSYSTEM",
@@ -58,19 +71,6 @@ window.WOLLOHY_PLAYGROUND = [
     url: "toys/aetheria.html",
     tags: ["generative", "game", "world"],
     accent: "magenta",
-    featured: false,
-    enabled: false,
-    embed: true,
-    order: 30
-  },
-  {
-    id: "vector-soup",
-    title: "VECTOR SOUP",
-    kicker: "EVOLUTIONARY SYNTH",
-    description: "A morphogenetic soundscape populated by autonomous organisms whose behavior and musical traits mutate over generations.",
-    url: "toys/vector-soup.html",
-    tags: ["generative", "system", "instrument"],
-    accent: "green",
     featured: false,
     enabled: false,
     embed: true,

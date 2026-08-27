@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="dark">
+  <title>NEW TOY</title>
+  <style>
+    :root {
+      --bg: #050505;
+      --surface: #101010;
+      --line: #343434;
+      --text: #f4f4f1;
+      --muted: #8b8b86;
+      --signal: #62fff1;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); }
+    body { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; overflow: hidden; }
+    button, input, select { font: inherit; }
+    button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid var(--signal); outline-offset: 3px; }
+
+    #world { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+
+    .shell {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      padding: 18px;
+    }
+
+    header, footer { pointer-events: auto; }
+    header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+    h1 { margin: 0; font: 800 clamp(28px, 6vw, 72px)/.9 Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; letter-spacing: .02em; }
+    .kicker { color: var(--signal); font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+    .help { max-width: 460px; color: var(--muted); font-size: 12px; line-height: 1.5; text-align: right; }
+
+    footer {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-top: 2px solid var(--line);
+      padding-top: 12px;
+    }
+
+    .control {
+      border: 2px solid var(--line);
+      background: var(--surface);
+      color: var(--text);
+      padding: 10px 12px;
+      min-height: 42px;
+      border-radius: 0;
+      font-weight: 800;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .control:hover { border-color: var(--text); }
+    .control.primary { background: var(--signal); color: var(--bg); border-color: var(--signal); }
+
+    @media (max-width: 640px) {
+      .shell { padding: 12px; }
+      header { display: block; }
+      .help { margin-top: 8px; text-align: left; max-width: 36ch; }
+      footer { overflow-x: auto; }
+      .control { flex: 0 0 auto; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="world" aria-label="Interactive toy canvas"></canvas>
+
+  <div class="shell">
+    <header>
+      <div>
+        <div class="kicker">PLAYGROUND OBJECT</div>
+        <h1>NEW TOY</h1>
+      </div>
+      <div class="help">One sentence explaining what the visitor can do. No implementation diary. No lore tax before the first interaction.</div>
+    </header>
+    <div></div>
+    <footer aria-label="Toy controls">
+      <button class="control primary" id="start">START</button>
+      <button class="control" id="reset">RESET</button>
+    </footer>
+  </div>
+
+  <script>
+    // Keep each toy self-contained. Playground is a launcher, not a runtime dependency.
+    const canvas = document.getElementById('world');
+    const ctx = canvas.getContext('2d');
+    let running = false;
+    let dpr = 1;
+
+    function resize() {
+      dpr = Math.min(2, window.devicePixelRatio || 1);
+      canvas.width = Math.floor(innerWidth * dpr);
+      canvas.height = Math.floor(innerHeight * dpr);
+      canvas.style.width = innerWidth + 'px';
+      canvas.style.height = innerHeight + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function reset() {
+      ctx.clearRect(0, 0, innerWidth, innerHeight);
+    }
+
+    function frame() {
+      if (running) {
+        // Draw / simulate here.
+      }
+      requestAnimationFrame(frame);
+    }
+
+    document.getElementById('start').addEventListener('click', async () => {
+      // Initialize Web Audio here if the toy uses sound. User gesture first.
+      running = !running;
+      document.getElementById('start').textContent = running ? 'PAUSE' : 'START';
+    });
+    document.getElementById('reset').addEventListener('click', reset);
+    addEventListener('resize', resize);
+    resize();
+    frame();
+  </script>
+</body>
+</html>

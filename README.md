@@ -29,13 +29,13 @@ Run `npm run validate` before publishing. The validator checks required fields, 
 ### Live / curated
 
 - **HOL-001** — flagship generative biosphere, currently linked to the proven GUVs deployment
-- **Neon Pulse** — first focused restoration; local Playground build with pointer/touch/keyboard control, score/combo/integrity, local best score, optional track input, optional mic input, and audio-reactive density
+- **Neon Pulse** — focused rhythm-arcade restoration with pointer/touch/keyboard control, score/combo/integrity, local best score, optional track input, optional mic input, and audio-reactive density
+- **Vector Soup** — autonomous ecosystem restoration where organisms forage, reproduce, inherit and mutate movement/pitch traits while environmental pressures shape the population; births and encounters become synthesis events when audio is enabled
 - **Generative Studio** — retained as an archive/workbench object while the stronger individual ideas are separated out
 
 ### Queue
 
 - Aetheria
-- Vector Soup
 - Cosmic Fluid
 - Hyper-Soup
 

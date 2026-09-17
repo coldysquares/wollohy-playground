@@ -1,45 +1,43 @@
 # WOLLOHY // Playground
 
-A registry-driven home for browser-native games, generative instruments, audiovisual systems, and miscellaneous interactive artifacts.
+A curated home for browser-native games, generative instruments, audiovisual systems, and small interactive artifacts.
 
-The operating rule is deliberately simple: **one collection registry, one shell, as many toys as you want.**
+The operating rule is deliberately simple: **one collection registry, one shell, a small number of toys worth showing.**
 
 ## Product idea
 
-The Playground is not a single game and it is not the old GUVs taxonomy exposed to visitors. It is the public-facing place for small interactive systems that are fun to open, understand quickly, and play with.
+The Playground is not a single game and it is not an archive dump. It is the public-facing place for small interactive systems that are fun to open, understand quickly, and play with.
 
-GUVs remains the lab/archive. Playground is the curated surface.
+Internal experiments can stay messy elsewhere. Playground is the curated surface.
+
+## Public eligibility gate
+
+A project should only appear publicly in Playground when it has:
+
+- its own canonical GitHub repository
+- its own stable production deployment
+- a clear public name and description
+- a README that explains what it is and how it runs
+- no dependency on an internal collection path as its canonical public identity
+- a working experience that makes sense without local setup
+
+Projects can be prototyped together internally, but public projects graduate into standalone repos before they are featured here.
 
 ## Editing contract
 
 `registry.js` owns the collection. Add, hide, reorder, feature, tag, or relink an object there without rebuilding the shell.
 
-A toy can be:
-
-- a self-contained HTML file in `toys/`
-- a live HTTPS URL
-- a larger project that opens in a new tab
+The public registry should point to standalone production URLs. Local files under `toys/` are useful for restoration and development, but they are not considered finished public projects until they have been promoted into their own repositories.
 
 If Future You forgets the syntax, open `docs/ADDING_TOYS.md`. A starter file also lives at `toys/_template.html`.
 
 Run `npm run validate` before publishing. The validator checks required fields, duplicate IDs, supported accents, URL shape, and missing enabled local files without adding any dependencies.
 
-## Restoration status
+## Current cleanup state
 
-### Live / curated
+The collection is being normalized so that each public toy has one canonical repo and one production deployment. Existing embedded or legacy-hosted objects should be treated as migration candidates until that work is complete.
 
-- **HOL-001** — flagship generative biosphere, currently linked to the proven GUVs deployment
-- **Neon Pulse** — focused rhythm-arcade restoration with pointer/touch/keyboard control, score/combo/integrity, local best score, optional track input, optional mic input, and audio-reactive density
-- **Vector Soup** — autonomous ecosystem restoration where organisms forage, reproduce, inherit and mutate movement/pitch traits while environmental pressures shape the population; births and encounters become synthesis events when audio is enabled
-- **Generative Studio** — retained as an archive/workbench object while the stronger individual ideas are separated out
-
-### Queue
-
-- Aetheria
-- Cosmic Fluid
-- Hyper-Soup
-
-The rule remains: **polish existing concepts before adding new ones.**
+The rule is: **polish and separate existing concepts before adding new ones.**
 
 ## Design doctrine
 
@@ -54,4 +52,4 @@ Each toy is allowed to have its own identity. Playground provides orientation an
 
 ## Personal-site relationship
 
-The main WOLLOHY site should orient. Playground should invite exploration. The personal site can show a few featured objects from this registry and link to the full collection once the Playground deployment has a stable public URL.
+The main WOLLOHY site should orient. Playground should invite exploration. The personal site can show a few featured standalone projects and link to the full collection once the Playground deployment is using only canonical project URLs.

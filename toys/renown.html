@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#eee8de">
+<title>RENOWN — History, professionally misrepresented</title>
+<meta name="description" content="A source-grounded historical professional network. The facts are real. The corporate phrasing is not.">
+<style>
+:root{
+  --bg:#eee8de;--paper:#fffdf8;--ink:#171513;--muted:#736b63;--line:#cfc5b7;
+  --wine:#6f334d;--blue:#42667a;--gold:#a87935;--green:#3f6554;--rust:#965747;
+  --soft:#f5f0e8;--shadow:0 14px 38px rgba(50,35,24,.10);
+  --serif:Georgia,"Times New Roman",serif;--sans:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+html{background:var(--bg);color:var(--ink);font-family:var(--sans)}
+body{margin:0;background:
+radial-gradient(circle at 15% 0%,rgba(111,51,77,.08),transparent 25rem),
+linear-gradient(180deg,#e9e1d5 0,#f5f1ea 18rem,#efe9df 100%)}
+button,input,select{font:inherit}
+button{cursor:pointer}
+a{color:inherit}
+.top{position:sticky;top:0;z-index:40;background:rgba(244,239,231,.94);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.topin{width:min(1180px,100%);margin:auto;min-height:68px;padding:10px 20px;display:flex;align-items:center;gap:18px}
+.brand{font-family:var(--serif);font-weight:800;font-size:25px;letter-spacing:.14em;white-space:nowrap}
+.brand i{color:var(--wine);font-style:normal}
+.tagline{font-size:12px;color:var(--muted);border-left:1px solid var(--line);padding-left:16px}
+.search{margin-left:auto;width:min(360px,38vw);border:1px solid var(--line);border-radius:999px;background:#fffcf7;padding:10px 14px;color:var(--ink)}
+.layout{width:min(1180px,100%);margin:26px auto 70px;padding:0 20px;display:grid;grid-template-columns:280px minmax(0,1fr);gap:22px}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
+.rail{align-self:start;position:sticky;top:94px;overflow:hidden}
+.railhead{padding:18px 18px 14px;border-bottom:1px solid var(--line)}
+.railhead .k{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--wine);font-weight:800}
+.railhead h2{font:700 22px/1.1 var(--serif);margin:6px 0 7px}
+.railhead p{font-size:12px;line-height:1.55;color:var(--muted);margin:0}
+.person{width:100%;border:0;border-bottom:1px solid #e4dbcf;background:transparent;text-align:left;padding:14px 16px;display:grid;grid-template-columns:42px minmax(0,1fr) auto;gap:11px;align-items:center;color:var(--ink)}
+.person:hover,.person.active{background:#f1ebe3}
+.initials{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;color:#fff;font:700 16px var(--serif);background:var(--person-accent,var(--wine))}
+.person strong{display:block;font-size:13px}
+.person small{display:block;color:var(--muted);font-size:10px;line-height:1.35;margin-top:2px}
+.arrow{color:var(--muted)}
+.principle{padding:16px;background:#26221f;color:#f8f1e8}
+.principle b{color:#e8b8c8}
+.principle p{font-size:11px;line-height:1.55;margin:5px 0 0;color:#d9d0c7}
+.profile{overflow:hidden}
+.cover{height:150px;position:relative;background:
+linear-gradient(135deg,var(--accent),color-mix(in srgb,var(--accent) 55%,#111));
+border-bottom:1px solid rgba(0,0,0,.15)}
+.cover:after{content:"HISTORY • NETWORK • PROVENANCE";position:absolute;right:22px;bottom:16px;color:rgba(255,255,255,.66);font:11px/1 var(--serif);letter-spacing:.18em}
+.hero{padding:0 28px 25px}
+.heroavatar{width:112px;height:112px;border-radius:50%;margin-top:-56px;border:5px solid var(--paper);background:var(--accent);display:grid;place-items:center;color:white;font:700 38px var(--serif);box-shadow:0 8px 25px rgba(0,0,0,.15);position:relative}
+.hero h1{font:700 clamp(30px,5vw,46px)/1.02 var(--serif);margin:13px 0 6px}
+.headline{font-size:17px;line-height:1.45}
+.meta{font-size:12px;color:var(--muted);margin-top:6px}
+.pills{display:flex;gap:7px;flex-wrap:wrap;margin-top:15px}
+.pill{border:1px solid var(--line);border-radius:999px;padding:6px 9px;background:#fbf7f0;font-size:11px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+.primary,.ghost{border-radius:999px;padding:9px 12px;font-size:12px;font-weight:750}
+.primary{border:1px solid var(--accent);background:var(--accent);color:white}
+.ghost{border:1px solid var(--line);background:transparent;color:var(--ink)}
+.section{padding:24px 28px;border-top:1px solid var(--line)}
+.eyebrow{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:900;margin-bottom:5px}
+.section h2{font:700 24px/1.1 var(--serif);margin:0 0 16px}
+.about{font-size:15px;line-height:1.65;margin:0;color:#312b26}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{border:1px solid var(--line);border-radius:13px;background:#fdf9f3;padding:15px}
+.card .label{font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted);font-weight:800}
+.card h3{font-size:15px;margin:5px 0 6px}
+.card p{font-size:12px;line-height:1.55;color:var(--muted);margin:0}
+.reco{border-left:4px solid var(--accent);padding:0 0 0 16px}
+.recohead{display:flex;gap:10px;align-items:center;margin-bottom:11px}
+.recohead .initials{width:44px;height:44px;flex:0 0 auto}
+.recohead strong{font-size:14px}
+.recohead small{display:block;font-size:10px;color:var(--muted);margin-top:2px}
+blockquote{font:18px/1.55 var(--serif);margin:0;color:#302925}
+.translation{margin-top:14px;border:1px dashed color-mix(in srgb,var(--accent) 50%,#c9b8aa);background:color-mix(in srgb,var(--accent) 7%,white);padding:13px;border-radius:11px}
+.translation b{display:block;font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--accent);margin-bottom:5px}
+.translation p{font-size:12px;line-height:1.5;margin:0}
+.skills{display:flex;gap:7px;flex-wrap:wrap}
+.skill{background:#f2ebe3;border:1px solid #ddd1c4;padding:8px 10px;border-radius:10px;font-size:11px}
+.skill strong{color:var(--accent)}
+.provbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:15px}
+.legend{display:flex;gap:6px;flex-wrap:wrap}
+.badge{border-radius:999px;padding:5px 8px;font-size:9px;letter-spacing:.08em;font-weight:900}
+.primarysrc{background:#dceadd;color:#2d5a3b}
+.edited{background:#dfe7ed;color:#315c73}
+.secondary{background:#eee1c9;color:#7b5824}
+.generated{background:#ecdce3;color:#77334f}
+.claim{border-top:1px solid #dfd5c9;padding:14px 0}
+.claim:first-of-type{border-top:0;padding-top:0}
+.claimtop{display:flex;align-items:flex-start;gap:9px;justify-content:space-between}
+.claim h3{font-size:14px;margin:0}
+.claim .renown{font:16px/1.45 var(--serif);margin:8px 0;color:#2c2521}
+.claim .fact{font-size:12px;line-height:1.55;color:var(--muted);margin:6px 0}
+.source{display:flex;gap:8px;align-items:center;justify-content:space-between;background:#f7f2eb;border:1px solid #e1d8cd;border-radius:10px;padding:10px;margin-top:8px}
+.source .sourcecopy{min-width:0}
+.source strong{font-size:11px;display:block}
+.source small{display:block;color:var(--muted);font-size:9px;line-height:1.35;margin-top:2px}
+.source a{font-size:10px;color:var(--accent);font-weight:800;white-space:nowrap}
+.drawer{position:fixed;right:0;top:0;bottom:0;width:min(540px,100%);background:var(--paper);z-index:100;border-left:1px solid var(--line);box-shadow:-20px 0 50px rgba(30,20,15,.16);transform:translateX(102%);transition:transform .22s ease;overflow:auto}
+.drawer.open{transform:none}
+.drawerhead{position:sticky;top:0;background:rgba(255,253,248,.95);backdrop-filter:blur(12px);padding:17px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px}
+.drawerhead strong{font:700 20px var(--serif)}
+.close{border:1px solid var(--line);background:#fffaf4;border-radius:999px;padding:8px 10px}
+.drawerbody{padding:20px}
+.overlay{position:fixed;inset:0;background:rgba(20,15,12,.35);z-index:90;display:none}
+.overlay.show{display:block}
+.prototype-note{margin-top:14px;font-size:10px;color:var(--muted);line-height:1.5}
+.empty{padding:60px 28px;text-align:center;color:var(--muted);display:none}
+footer{width:min(1180px,100%);margin:0 auto 34px;padding:0 20px;color:var(--muted);font-size:10px;display:flex;justify-content:space-between;gap:18px}
+@media(max-width:780px){
+  .tagline{display:none}.search{width:44vw}.layout{grid-template-columns:1fr}.rail{position:static}
+  .rail .people{display:flex;overflow:auto}.person{min-width:210px;border-right:1px solid #e4dbcf;border-bottom:0}
+  .grid2{grid-template-columns:1fr}.cover{height:115px}.hero{padding-left:20px;padding-right:20px}.section{padding-left:20px;padding-right:20px}
+  footer{display:block;line-height:1.7}
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="topin">
+    <div class="brand">REN<i>O</i>WN</div>
+    <div class="tagline">History, professionally misrepresented.</div>
+    <input id="search" class="search" type="search" placeholder="Search people, skills, exile…">
+  </div>
+</header>
+
+<main class="layout">
+  <aside class="panel rail">
+    <div class="railhead">
+      <div class="k">Seeded network v0</div>
+      <h2>Historical people</h2>
+      <p>The facts stay sourced. The résumé language is allowed to become completely unhinged.</p>
+    </div>
+    <div id="people" class="people"></div>
+    <div class="principle">
+      <b>NO SOURCE → NO JOKE</b>
+      <p>Every satirical claim should be traceable to an underlying event, text, or relationship with visible provenance.</p>
+    </div>
+  </aside>
+
+  <section id="profile" class="panel profile"></section>
+  <section id="empty" class="panel empty">No historically overqualified person matches that search.</section>
+</main>
+
+<div id="overlay" class="overlay"></div>
+<aside id="drawer" class="drawer" aria-hidden="true">
+  <div class="drawerhead"><strong id="drawerTitle">Provenance</strong><button id="close" class="close">Close</button></div>
+  <div id="drawerBody" class="drawerbody"></div>
+</aside>
+
+<footer>
+  <span>RENOWN v0 • manually curated seed profiles</span>
+  <span>Source → provenance → transformation. Generated satire is never evidence.</span>
+</footer>
+
+<script>
+const people = [
+{
+ id:"ebb",name:"Elizabeth Barrett Browning",initials:"EB",accent:"#6f334d",
+ headline:"Poet • Sonnet Operations • Specialist in emotionally irreversible correspondence",
+ meta:"London, England · 1845 · 500+ correspondents",
+ about:"Writer working at the intersection of lyric form, private correspondence, intellectual partnership, and high-stakes emotional disclosure. Known for sustained written engagements capable of materially altering both parties’ long-term strategic outlook.",
+ open:["Poetic collaboration","Elopement","Cross-border relocation","Long-form correspondence"],
+ skills:[["Poetry","99+"],["Devastating Correspondence","74"],["Emotional Intelligence","87"],["Strategic Courtship","63"]],
+ reco:{from:"Robert Browning",initials:"RB",role:"Poet · Dramatic Monologue Specialist",text:"Elizabeth’s work became something I kept returning to, until admiration became personal and impossible to separate from the correspondence itself.",sub:"Professional-network translation: “I am trying to say I love you using the strongest language permitted by this interface.”"},
+ experiences:[
+  {title:"Independent Poet",when:"1838–1861 · Europe",desc:"Led long-form lyric initiatives, international correspondence, and emotionally consequential peer review."},
+  {title:"Courtship Correspondence",when:"1845–1846 · London",desc:"Participated in a high-volume written collaboration that escalated into permanent strategic alignment."}
+ ],
+ claims:[
+  {type:"primary",title:"Browning initiates the correspondence",renown:"Received exceptionally strong unsolicited peer feedback from Robert Browning, triggering a sustained high-engagement correspondence.",fact:"Robert Browning’s first surviving letter to Elizabeth Barrett, postmarked 10 January 1845, opens with emphatic praise of her poetry.",source:"The Brownings’ Correspondence, letter 1811 (RB to EBB)",note:"Edited transcription of an 1845 primary-source letter; manuscript held at Wellesley College.",url:"https://www.browningscorrespondence.com/correspondence/2049/"},
+  {type:"primary",title:"EBB welcomes continued correspondence",renown:"Converted initial outreach into an ongoing written collaboration with unusually high mutual retention.",fact:"On 3 February 1845, EBB wrote that she was delighted both to hear from Browning and to write to him, calling paper correspondence a social pleasure.",source:"The Brownings’ Correspondence, letter 1829 (EBB to RB)",note:"Edited transcription of an 1845 primary-source letter; manuscript held at Wellesley College.",url:"https://www.browningscorrespondence.com/correspondence/2067/"},
+  {type:"primary",title:"The language becomes explicitly intimate",renown:"Stakeholder relationship evolved beyond standard professional-network parameters.",fact:"By November 1845, Browning’s letters use direct terms of love and describe EBB as occupying his thoughts and heart.",source:"The Brownings’ Correspondence, letter 2083 (RB to EBB)",note:"Edited transcription of an 1845 primary-source letter; manuscript held at Wellesley College.",url:"https://www.browningscorrespondence.com/correspondence/2327/"}
+ ]
+},
+{
+ id:"rb",name:"Robert Browning",initials:"RB",accent:"#42667a",
+ headline:"Poet • Dramatic Monologue Specialist • High-retention correspondent",
+ meta:"London, England · 1845 · Open to: one extremely specific poet",
+ about:"Poet with a demonstrated ability to convert literary admiration into sustained correspondence, increasingly direct emotional disclosure, and eventually cross-border life restructuring.",
+ open:["Poetry","Correspondence","Italian relocation","Long-term alignment"],
+ skills:[["Dramatic Monologue","99+"],["Persistence","91"],["Peer Recognition","86"],["Change Management","68"]],
+ reco:{from:"Elizabeth Barrett Browning",initials:"EB",role:"Poet · Sonnet Operations",text:"Robert combines extraordinary literary ability with a kindness and intellectual generosity that made his correspondence increasingly difficult to classify as merely professional.",sub:"Corporate yearning status: critical."},
+ experiences:[
+  {title:"Independent Poet",when:"1833–1889 · Europe",desc:"Published poetry, plays, and monologues while maintaining an unusually consequential correspondence practice."},
+  {title:"Relationship Development",when:"1845–1846 · London",desc:"Advanced from peer outreach to high-trust personal partnership without a formal CRM."}
+ ],
+ claims:[
+  {type:"primary",title:"Admiration becomes part of daily routine",renown:"Demonstrated exceptional engagement with a peer’s published work and repeatedly returned to it during periods of reduced productivity.",fact:"In January 1845 Browning described keeping EBB’s books within reach and returning to them when his own work stalled.",source:"The Brownings’ Correspondence, letter 1825 (RB to EBB)",note:"Edited transcription of an 1845 primary-source letter.",url:"https://www.browningscorrespondence.com/correspondence/2063/"},
+  {type:"primary",title:"Personal interest overtakes literary business",renown:"Professional correspondence exceeded its original scope and became the dominant stakeholder relationship.",fact:"In November 1845 Browning wrote that personal interest had absorbed every other topic from the beginning.",source:"The Brownings’ Correspondence, letter 2083 (RB to EBB)",note:"Edited transcription of an 1845 primary-source letter.",url:"https://www.browningscorrespondence.com/correspondence/2327/"}
+ ]
+},
+{
+ id:"darwin",name:"Charles Darwin",initials:"CD",accent:"#3f6554",
+ headline:"Naturalist • Evolutionary Systems Research • Carnivorous Plant Stakeholder",
+ meta:"Down House, England · 1875 · Featured skill: Drosera",
+ about:"Naturalist operating across species, timescales, and experimental systems. Known for repeatedly turning small observations into very large explanatory frameworks and for spending a frankly unreasonable amount of time feeding things to sundews.",
+ open:["Specimen exchange","Long experiments","Plant correspondence","Extremely specific questions"],
+ skills:[["Natural History","99+"],["Drosera","147"],["Observation","96"],["Patient Weirdness","100"]],
+ reco:{from:"Drosera rotundifolia",initials:"DR",role:"Carnivorous plant · Experimental collaborator",text:"Charles consistently provided novel substrates, careful observation, and an almost concerning level of follow-through.",sub:"Relationship duration: approximately fifteen years of “what happens if I put this on the leaf?”"},
+ experiences:[
+  {title:"Principal Investigator, Insectivorous Plants",when:"1860–1875 · Down House",desc:"Conducted long-running experiments on sundews and other carnivorous plants, including sensitivity, movement, secretion, and digestion."},
+  {title:"Author, Insectivorous Plants",when:"1875",desc:"Published experimental findings after years of iterative observation and increasingly specific tests."}
+ ],
+ claims:[
+  {type:"primary",title:"Long-running Drosera research",renown:"Maintained a multi-year research program on high-sensitivity botanical capture systems.",fact:"Darwin wrote that he first observed Drosera in 1860 and became convinced its leaves absorbed nutrients from captured insects.",source:"Charles Darwin, Insectivorous Plants (1875)",note:"Digitized edition of Darwin’s published primary work.",url:"https://darwin-online.org.uk/converted/published/1875_Insectivorous_F1217/1875_Insect_F1217.html"},
+  {type:"primary",title:"Hair, toe nail, meat: the full experimental stack",renown:"Used unconventional test inputs to characterize local response thresholds and nutrient discrimination.",fact:"Darwin’s 1862 notes record experiments placing human hair, cooked meat, and a piece of toenail on Drosera leaves and tracking tentacle responses.",source:"Darwin manuscript CUL-DAR54.29-38 (1862)",note:"Digitized manuscript transcription via Darwin Online; Cambridge University Library source.",url:"https://darwin-online.org.uk/converted/manuscripts/Darwin_C_R_CUL-DAR54.29-38.html"},
+  {type:"primary",title:"Extreme sensitivity without a nervous system",renown:"Documented distributed signaling behavior in a non-neural biological system.",fact:"In Insectivorous Plants, Darwin emphasized the extreme sensitivity of Drosera tentacles and the transmission of impulses across the leaf despite the absence of a nervous system.",source:"Charles Darwin, Insectivorous Plants (1875)",note:"Published primary work, digitized by Darwin Online.",url:"https://darwin-online.org.uk/converted/published/1875_Insectivorous_F1217/1875_Insect_F1217.html"}
+ ]
+},
+{
+ id:"napoleon",name:"Napoleon Bonaparte",initials:"NB",accent:"#a87935",
+ headline:"Former Emperor • Continental Strategy • Career-break return specialist",
+ meta:"France / Elba · 1814–1815 · Open to: re-entry",
+ about:"Executive leader with extensive experience in rapid organizational scaling, coalition conflict, territorial expansion, involuntary relocation, and unusually aggressive return-to-office strategy.",
+ open:["Executive leadership","Re-entry","Small-island governance","High-stakes restructuring"],
+ skills:[["Campaign Strategy","99+"],["Executive Presence","100"],["Career Re-entry","1815"],["Stakeholder Resistance","High"]],
+ reco:{from:"Former colleagues",initials:"OG",role:"Old Guard · Long-term direct reports",text:"Worked together across periods of expansion, decline, and organizational restructuring. Relationship ended after a highly emotional farewell.",sub:"Professional translation of “Adieux de Fontainebleau.”"},
+ experiences:[
+  {title:"Emperor of the French",when:"1804–1814 · France",desc:"Led large-scale continental operations until an adverse coalition outcome triggered leadership transition."},
+  {title:"Career Break / Sovereign of Elba",when:"1814–1815 · Elba",desc:"Relocated following abdication; established a small government, reorganized local resources, and remained operationally active."},
+  {title:"Re-entry Initiative",when:"1815 · France",desc:"Exited Elba and returned to Paris in a rapid twenty-day executive comeback later known as the Hundred Days."}
+ ],
+ claims:[
+  {type:"secondary",title:"Abdication and exile",renown:"Entered a ten-month externally mandated career break following an organization-wide leadership transition.",fact:"After the 1814 French campaign and abdication, Napoleon was exiled to Elba, arriving in May 1814.",source:"Fondation Napoléon, The French Campaign",note:"Modern historical synthesis from a specialized Napoleonic history institution.",url:"https://www.napoleon.org/en/young-historians/napodoc/the-french-campaign/"},
+  {type:"secondary",title:"Still running things on Elba",renown:"Used career break to operate a smaller sovereign organization and improve local infrastructure.",fact:"On Elba Napoleon organized a government, maintained a small court, and undertook projects to improve local resources and roads.",source:"Fondation Napoléon, Elba",note:"Modern historical synthesis.",url:"https://www.napoleon.org/en/magazine/places/elba/"},
+  {type:"secondary",title:"Return to France",renown:"Re-entered the prior market with exceptional speed after a ten-month absence.",fact:"Napoleon left Elba in 1815, landed in France on 1 March, and returned to Paris and power during the Hundred Days.",source:"Fondation Napoléon, The French Campaign",note:"Modern historical synthesis.",url:"https://www.napoleon.org/en/young-historians/napodoc/the-french-campaign/"}
+ ]
+},
+{
+ id:"marx",name:"Karl Marx",initials:"KM",accent:"#965747",
+ headline:"Political theorist • Critique infrastructure • Co-founder, Manifesto deliverable",
+ meta:"London, England · 1848 onward · Thought leadership: extremely long",
+ about:"Writer and theorist specializing in capitalism, class conflict, political economy, and documents that dramatically exceed normal stakeholder expectations.",
+ open:["Editorial collaboration","Theory","Archives","Very long deadlines"],
+ skills:[["Political Economy","99+"],["Dialectics","93"],["Manifesto Delivery","1848"],["Scope Expansion","Unlimited"]],
+ reco:{from:"Friedrich Engels",initials:"FE",role:"Collaborator · Co-author · Operational support",text:"Karl brought unmatched analytical intensity and a remarkable ability to turn a commissioned program into a durable international intellectual product.",sub:"Co-founder energy, but with more footnotes."},
+ experiences:[
+  {title:"Co-author, Manifesto of the Communist Party",when:"1847–1848 · London",desc:"Co-delivered a theoretical and practical program commissioned by the Communist League."},
+  {title:"Research & Writing",when:"London years",desc:"Produced sustained work on political economy, class, history, and capitalism across books, journalism, correspondence, and organizational activity."}
+ ],
+ claims:[
+  {type:"primary",title:"The Manifesto was commissioned",renown:"Accepted a high-priority strategic writing engagement from an international worker organization.",fact:"Engels’ later prefaces state that the Communist League commissioned Marx and Engels at its November 1847 London congress to prepare a theoretical and practical program.",source:"Prefaces to the Communist Manifesto",note:"Primary retrospective statements by Engels associated with later editions.",url:"https://www.marxists.org/archive/marx/works/1848/communist-manifesto/preface.htm"},
+  {type:"edited",title:"The deliverable shipped in 1848",renown:"Delivered a high-impact publication immediately before a major continental change-management event.",fact:"The Manifesto was written in late 1847 and first published in February 1848.",source:"Marx/Engels Internet Archive, Manifesto metadata and text",note:"Modern digital edition/transcription of a historical text.",url:"https://www.marxists.org/archive/marx/works/1848/communist-manifesto/"},
+  {type:"edited",title:"Extensive work archive",renown:"Maintained a multi-decade thought-leadership pipeline spanning theory, journalism, speeches, letters, and organizational documents.",fact:"The Marx/Engels archive indexes works across the 1840s through the 1880s, including the Manifesto, Capital, journalism, speeches, and correspondence.",source:"Marx/Engels Library",note:"Modern archival index to primary and edited texts.",url:"https://www.marxists.org/archive/marx/works/"}
+ ]
+}
+];
+
+const badges={primary:["PRIMARY SOURCE","primarysrc"],edited:["EDITED PRIMARY","edited"],secondary:["SECONDARY SOURCE","secondary"]};
+let current="ebb";
+const peopleEl=document.getElementById("people"),profileEl=document.getElementById("profile"),emptyEl=document.getElementById("empty"),searchEl=document.getElementById("search");
+function esc(s){return String(s||"").replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]})}
+function personButton(p){
+ const b=document.createElement("button");b.className="person"+(p.id===current?" active":"");b.style.setProperty("--person-accent",p.accent);
+ b.innerHTML='<span class="initials">'+esc(p.initials)+'</span><span><strong>'+esc(p.name)+'</strong><small>'+esc(p.headline)+'</small></span><span class="arrow">›</span>';
+ b.addEventListener("click",function(){current=p.id;renderPeople();renderProfile()});return b;
+}
+function renderPeople(filter){
+ peopleEl.innerHTML="";const q=(filter||"").toLowerCase();
+ const list=people.filter(function(p){return !q||[p.name,p.headline,p.meta,p.about].concat(p.skills.map(function(x){return x[0]})).join(" ").toLowerCase().includes(q)});
+ list.forEach(function(p){peopleEl.appendChild(personButton(p))});
+ return list;
+}
+function renderProfile(){
+ const p=people.find(function(x){return x.id===current});if(!p)return;
+ profileEl.style.display="block";emptyEl.style.display="none";profileEl.style.setProperty("--accent",p.accent);
+ const open=p.open.map(function(x){return '<span class="pill">'+esc(x)+'</span>'}).join("");
+ const skills=p.skills.map(function(x){return '<span class="skill"><strong>'+esc(x[1])+'</strong> '+esc(x[0])+'</span>'}).join("");
+ const exp=p.experiences.map(function(x){return '<div class="card"><div class="label">'+esc(x.when)+'</div><h3>'+esc(x.title)+'</h3><p>'+esc(x.desc)+'</p></div>'}).join("");
+ profileEl.innerHTML=
+ '<div class="cover"></div>'+
+ '<div class="hero"><div class="heroavatar">'+esc(p.initials)+'</div><h1>'+esc(p.name)+'</h1><div class="headline">'+esc(p.headline)+'</div><div class="meta">'+esc(p.meta)+'</div><div class="pills">'+open+'</div><div class="actions"><button class="primary" id="provBtn">Show provenance</button><button class="ghost" id="randomBtn">Random colleague</button></div></div>'+
+ '<div class="section"><div class="eyebrow">About</div><p class="about">'+esc(p.about)+'</p></div>'+
+ '<div class="section"><div class="eyebrow">Recommendations</div><h2>Corporate yearning / professional admiration</h2><div class="reco"><div class="recohead"><span class="initials" style="background:'+p.accent+'">'+esc(p.reco.initials)+'</span><span><strong>'+esc(p.reco.from)+'</strong><small>'+esc(p.reco.role)+'</small></span></div><blockquote>“'+esc(p.reco.text)+'”</blockquote><div class="translation"><b>RENOWN translation layer</b><p>'+esc(p.reco.sub)+'</p></div></div></div>'+
+ '<div class="section"><div class="eyebrow">Experience</div><h2>Selected work</h2><div class="grid2">'+exp+'</div></div>'+
+ '<div class="section"><div class="eyebrow">Skills</div><div class="skills">'+skills+'</div></div>'+
+ '<div class="section"><div class="eyebrow">Method</div><h2>Source → provenance → transformation</h2><div class="grid2"><div class="card"><div class="label">Historical layer</div><h3>What actually happened?</h3><p>Facts, texts, dates, relationships, and events are captured with explicit sources and source types.</p></div><div class="card"><div class="label">RENOWN layer</div><h3>How did we professionally misrepresent it?</h3><p>Satirical interface language is generated separately and is always labeled as transformation, never evidence.</p></div></div></div>';
+ document.getElementById("provBtn").addEventListener("click",openDrawer);
+ document.getElementById("randomBtn").addEventListener("click",function(){const idx=Math.floor(Math.random()*people.length);current=people[idx].id;renderPeople(searchEl.value);renderProfile()});
+}
+function openDrawer(){
+ const p=people.find(function(x){return x.id===current});
+ document.getElementById("drawerTitle").textContent=p.name+" — provenance";
+ const html='<div class="provbar"><div><div class="eyebrow">Evidence trail</div><strong>'+p.claims.length+' transformed claims</strong></div><div class="legend"><span class="badge generated">GENERATED SATIRE</span></div></div>'+
+ '<div class="card" style="margin-bottom:16px"><div class="label">Rule</div><h3>No source → no joke</h3><p>The RENOWN phrasing may be ridiculous. The underlying historical proposition must still have a visible source and source classification.</p></div>'+
+ p.claims.map(function(c){
+   const b=badges[c.type]||badges.secondary;
+   return '<div class="claim"><div class="claimtop"><h3>'+esc(c.title)+'</h3><span class="badge '+b[1]+'">'+b[0]+'</span></div><div class="renown">RENOWN: '+esc(c.renown)+'</div><div class="fact"><strong>Underlying fact:</strong> '+esc(c.fact)+'</div><div class="source"><div class="sourcecopy"><strong>'+esc(c.source)+'</strong><small>'+esc(c.note)+'</small></div><a href="'+esc(c.url)+'" target="_blank" rel="noopener">SOURCE ↗</a></div></div>'
+ }).join("")+
+ '<p class="prototype-note">v0 note: these seed records are manually curated. A future generative version should retrieve sources first, preserve provenance metadata, then generate the satirical layer from the bounded evidence packet.</p>';
+ document.getElementById("drawerBody").innerHTML=html;
+ document.getElementById("drawer").classList.add("open");document.getElementById("overlay").classList.add("show");document.getElementById("drawer").setAttribute("aria-hidden","false");
+}
+function closeDrawer(){document.getElementById("drawer").classList.remove("open");document.getElementById("overlay").classList.remove("show");document.getElementById("drawer").setAttribute("aria-hidden","true")}
+document.getElementById("close").addEventListener("click",closeDrawer);document.getElementById("overlay").addEventListener("click",closeDrawer);
+document.addEventListener("keydown",function(e){if(e.key==="Escape")closeDrawer()});
+searchEl.addEventListener("input",function(){
+ const list=renderPeople(searchEl.value);
+ if(!list.length){profileEl.style.display="none";emptyEl.style.display="block";return}
+ if(!list.some(function(x){return x.id===current})){current=list[0].id;renderPeople(searchEl.value);renderProfile()}
+});
+renderPeople();renderProfile();
+</script>
+</body>
+</html>

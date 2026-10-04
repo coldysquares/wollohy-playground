@@ -38,12 +38,12 @@ window.WOLLOHY_PLAYGROUND = [
     order: 10
   },
   {
-    id: "neon-pulse",
-    title: "NEON PULSE",
-    kicker: "RHYTHM ARCADE",
-    description: "Collect cyan notes, dodge pink hazards, build a combo, and optionally let a track or microphone drive the field density.",
-    url: "toys/neon-pulse.html",
-    tags: ["game", "arcade", "audio-reactive"],
+    id: "aetheria",
+    title: "AETHERIA",
+    kicker: "AUDIO-VISUAL ECOSYSTEM",
+    description: "Generative flora, harmonic spores, and a reactive musical field you can disturb, surf, and reshape.",
+    url: "toys/aetheria.html",
+    tags: ["generative", "game", "world"],
     accent: "magenta",
     featured: true,
     enabled: true,
@@ -54,7 +54,7 @@ window.WOLLOHY_PLAYGROUND = [
     id: "vector-soup",
     title: "VECTOR SOUP",
     kicker: "EVOLUTIONARY SYNTH",
-    description: "Alter nutrients, lifespan, and mutation while autonomous organisms forage, reproduce, inherit traits, drift, and become a generative synth.",
+    description: "A morphogenetic soundscape populated by autonomous organisms whose behavior and musical traits mutate over generations.",
     url: "toys/vector-soup.html",
     tags: ["generative", "system", "instrument"],
     accent: "green",
@@ -62,19 +62,6 @@ window.WOLLOHY_PLAYGROUND = [
     enabled: true,
     embed: true,
     order: 30
-  },
-  {
-    id: "aetheria",
-    title: "AETHERIA",
-    kicker: "AUDIO-VISUAL ECOSYSTEM",
-    description: "Generative flora, harmonic spores, and a reactive musical field you can disturb, surf, and reshape.",
-    url: "toys/aetheria.html",
-    tags: ["generative", "game", "world"],
-    accent: "magenta",
-    featured: false,
-    enabled: false,
-    embed: true,
-    order: 40
   },
   {
     id: "cosmic-fluid",
@@ -85,9 +72,9 @@ window.WOLLOHY_PLAYGROUND = [
     tags: ["game", "audio-reactive", "arcade"],
     accent: "yellow",
     featured: false,
-    enabled: false,
+    enabled: true,
     embed: true,
-    order: 50
+    order: 40
   },
   {
     id: "hyper-soup",
@@ -98,9 +85,35 @@ window.WOLLOHY_PLAYGROUND = [
     tags: ["game", "arcade", "audio-reactive"],
     accent: "green",
     featured: false,
-    enabled: false,
+    enabled: true,
+    embed: true,
+    order: 50
+  },
+  {
+    id: "hyper-soup-matrix",
+    title: "RESONATOR MATRIX",
+    kicker: "PHYSICS TOY",
+    description: "An earlier Hyper-Soup branch: vortex pulls, linear traction, mirror matrices, and a synth playground inside a game shell.",
+    url: "toys/hyper-soup-matrix.html",
+    tags: ["game", "system", "audio-reactive"],
+    accent: "cyan",
+    featured: false,
+    enabled: true,
     embed: true,
     order: 60
+  },
+  {
+    id: "neon-pulse",
+    title: "NEON PULSE",
+    kicker: "RHYTHM ARCADE",
+    description: "The clearest arcade branch: collect notes, dodge hazards, build multipliers, and let a track or microphone drive the field.",
+    url: "toys/neon-pulse.html",
+    tags: ["game", "arcade", "audio-reactive"],
+    accent: "magenta",
+    featured: false,
+    enabled: true,
+    embed: true,
+    order: 70
   },
   {
     id: "generative-studio",

@@ -1,56 +1,814 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#05070a">
-<title>Vector Soup</title>
-<style>
-:root{--bg:#05070a;--panel:#0b0f14;--line:#2c3744;--text:#edf4f7;--muted:#82909b;--cyan:#42f5e9;--green:#a8ff39;--pink:#ff3f8e;--yellow:#ffe44d}
-*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}button,input{font:inherit}button:focus-visible,input:focus-visible{outline:3px solid var(--yellow);outline-offset:3px}canvas{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none}.top{position:fixed;z-index:5;top:14px;left:14px;right:14px;display:flex;justify-content:space-between;align-items:flex-start;gap:16px;pointer-events:none}.brand small{display:block;color:var(--green);font-size:10px;font-weight:800;letter-spacing:.13em}.brand h1{margin:2px 0 0;font-family:Impact,Haettenschweiler,'Arial Narrow Bold',sans-serif;font-size:clamp(44px,8vw,96px);line-height:.8;letter-spacing:.02em}.meters{display:grid;grid-template-columns:repeat(3,auto);background:var(--panel);border:2px solid var(--line);pointer-events:auto}.meter{padding:10px 13px;border-left:1px solid var(--line);min-width:104px}.meter:first-child{border-left:0}.meter span{display:block;font-size:9px;color:var(--muted);letter-spacing:.1em}.meter b{display:block;margin-top:3px;font-size:17px}.meter:nth-child(1)b{color:var(--cyan)}.meter:nth-child(2)b{color:var(--green)}.meter:nth-child(3)b{color:var(--pink)}.dock{position:fixed;z-index:6;left:14px;bottom:14px;width:min(620px,calc(100vw - 28px));background:var(--panel);border:2px solid var(--line);pointer-events:auto}.dock-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 11px;border-bottom:1px solid var(--line)}.dock-head strong{font-size:10px;letter-spacing:.12em;color:var(--cyan)}.audio{font-size:9px;color:var(--muted)}.audio.on{color:var(--green)}.controls{display:grid;grid-template-columns:repeat(3,1fr);gap:0}.control{padding:10px 11px;border-right:1px solid var(--line)}.control:last-child{border-right:0}.control label{display:flex;justify-content:space-between;gap:8px;font-size:9px;color:var(--muted);margin-bottom:7px}.control b{color:var(--text)}input[type=range]{width:100%;accent-color:var(--green)}.actions{display:flex;gap:7px;padding:9px 11px;border-top:1px solid var(--line);flex-wrap:wrap}.btn{border:2px solid var(--line);background:var(--bg);color:var(--text);padding:9px 11px;border-radius:0;min-height:39px;font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;cursor:pointer}.btn:hover{border-color:var(--text)}.btn.primary{background:var(--green);color:var(--bg);border-color:var(--green)}.btn.event{color:var(--pink);border-color:var(--pink)}.legend{position:fixed;z-index:4;right:14px;bottom:14px;width:min(330px,calc(100vw - 28px));border-top:2px solid var(--line);padding-top:8px;color:var(--muted);font-size:10px;line-height:1.5;text-align:right;pointer-events:none}.legend b{color:var(--cyan)}.overlay{position:fixed;z-index:20;inset:0;display:grid;place-items:center;padding:20px;background:rgba(5,7,10,.95)}.overlay.hidden{display:none}.card{width:min(680px,100%);border:4px solid var(--text);background:var(--bg);padding:28px;box-shadow:10px 10px 0 var(--green)}.eyebrow{font-size:10px;color:var(--pink);font-weight:800;letter-spacing:.15em}.card h2{margin:8px 0 12px;font-family:Impact,Haettenschweiler,'Arial Narrow Bold',sans-serif;font-size:clamp(62px,13vw,126px);line-height:.76}.card p{color:#c3cbd0;line-height:1.55;max-width:58ch}.intro-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);margin:18px 0}.intro-grid div{background:var(--bg);padding:12px}.intro-grid b{display:block;color:var(--green);font-size:11px;margin-bottom:4px}.intro-grid span{font-size:10px;color:var(--muted);line-height:1.4}.start-actions{display:flex;gap:8px;flex-wrap:wrap}
-@media(max-width:760px){.top{display:block}.brand h1{font-size:50px}.meters{margin-top:10px;grid-template-columns:repeat(3,1fr)}.meter{min-width:0;padding:8px}.meter b{font-size:13px}.dock{left:8px;bottom:8px;width:calc(100vw - 16px)}.controls{grid-template-columns:1fr}.control{border-right:0;border-bottom:1px solid var(--line);padding:7px 9px}.control:last-child{border-bottom:0}.legend{display:none}.card{padding:22px;box-shadow:7px 7px 0 var(--green)}.intro-grid{grid-template-columns:1fr}.actions{padding:7px 9px}.btn{min-height:36px;padding:7px 9px}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecosystem Morphogenetic Soundscape Generator</title>
+    <style>
+        :root {
+            --bg-dark: #04060b;
+            --panel-bg: #0b0f19;
+            --control-bg: #141a29;
+            --border-ui: #1e293b;
+            --text-light: #f8fafc;
+            --text-dim: #64748b;
+            --accent-cyan: #00f0ff;
+            --accent-magenta: #ff007f;
+            --accent-green: #39ff14;
+        }
+
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Hardware Module HUD Header */
+
+        .telemetry-bridge {
+            background-color: var(--panel-bg);
+            border-bottom: 2px solid var(--border-ui);
+            padding: 0.75rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+            z-index: 10;
+        }
+
+        .sys-title {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sys-title h1 {
+            font-size: 0.9rem;
+            font-weight: 900;
+
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--accent-cyan);
+        }
+
+        .sys-title span {
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            font-family: monospace;
+        }
+
+        .live-stats {
+            display: flex;
+            gap: 2.5rem;
+        }
+
+        .stat-block {
+            display: flex;
+            flex-direction: column;
+
+            align-items: flex-end;
+            font-family: monospace;
+        }
+
+        .stat-label {
+            font-size: 0.6rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .stat-value {
+            font-size: 1rem;
+            font-weight: bold;
+            text-shadow: 0 0 8px currentColor;
+        }
+
+        .cyan { color: var(--accent-cyan); }
+        .magenta { color: var(--accent-magenta); }
+
+        .green { color: var(--accent-green); }
+
+        /* Simulation Layout */
+        .workspace {
+            display: flex;
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .viewport-pane {
+            flex: 1;
+            position: relative;
+            background: #010205;
+        }
+
+        #simCanvas {
+            position: absolute;
+            top: 0;
+
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* Control Panel Sidebar */
+        .control-sidebar {
+            width: 350px;
+            background-color: var(--panel-bg);
+            border-left: 2px solid var(--border-ui);
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            box-shadow: -8px 0 30px rgba(0,0,0,0.5);
+            z-index: 5;
+            overflow-y: auto;
+        }
+
+
+        .rack-card {
+            background-color: var(--control-bg);
+            border: 1px solid var(--border-ui);
+            border-radius: 0.5rem;
+            padding: 0.85rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+        }
+
+        h3 {
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #94a3b8;
+            border-bottom: 1px solid var(--border-ui);
+            padding-bottom: 0.25rem;
+        }
+
+
+        .param-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .param-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.7rem;
+            color: #94a3b8;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 3px;
+            background: #1e293b;
+
+            border-radius: 1px;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-thumb {
+            -webkit-appearance: none;
+            width: 10px;
+            height: 10px;
+            background: var(--accent-cyan);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 6px var(--accent-cyan);
+        }
+
+        .btn-ui {
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            border: 1px solid #334155;
+            color: #f8fafc;
+            padding: 0.6rem;
+
+            border-radius: 0.375rem;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            transition: all 0.15s ease;
+            text-align: center;
+        }
+
+        .btn-ui:hover {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 8px rgba(0, 240, 255, 0.2);
+        }
+
+        .btn-power {
+            border-color: var(--accent-green) !important;
+            color: var(--accent-green);
+
+            background: rgba(57, 255, 20, 0.03);
+        }
+
+        /* Genome Trait Visualizers */
+        .genome-bar-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            margin-top: 0.25rem;
+        }
+
+        .genome-bar-row {
+            display: flex;
+            flex-direction: column;
+            gap: 0.15rem;
+        }
+
+        .genome-label-strip {
+            display: flex;
+
+            justify-content: space-between;
+            font-size: 0.6rem;
+            font-family: monospace;
+            color: #64748b;
+        }
+
+        .genome-track-bg {
+            height: 5px;
+            background-color: #090d16;
+            border-radius: 2px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .genome-fill-bar {
+            height: 100%;
+            width: 50%;
+            background-color: var(--accent-cyan);
+            transition: width 0.1s linear;
+
+        }
+    </style>
 </head>
 <body>
-<canvas id="world" aria-label="Vector Soup autonomous organism field"></canvas>
-<div class="top">
-  <div class="brand"><small>WOLLOHY PLAYGROUND // EVOLUTIONARY SYNTH</small><h1>VECTOR SOUP</h1></div>
-  <div class="meters"><div class="meter"><span>POPULATION</span><b id="pop">000</b></div><div class="meter"><span>GENERATION</span><b id="gen">000</b></div><div class="meter"><span>DRIFT</span><b id="drift">0%</b></div></div>
-</div>
-<div class="dock">
-  <div class="dock-head"><strong>ENVIRONMENT PRESSURES</strong><span id="audioState" class="audio">AUDIO DORMANT</span></div>
-  <div class="controls">
-    <div class="control"><label><span>NUTRIENTS</span><b id="nutrientVal">8</b></label><input id="nutrients" type="range" min="2" max="20" value="8"></div>
-    <div class="control"><label><span>LIFESPAN</span><b id="lifeVal">72%</b></label><input id="lifespan" type="range" min="35" max="100" value="72"></div>
-    <div class="control"><label><span>MUTATION</span><b id="mutationVal">14%</b></label><input id="mutation" type="range" min="1" max="45" value="14"></div>
-  </div>
-  <div class="actions"><button class="btn primary" id="audioBtn">AWAKEN AUDIO</button><button class="btn" id="seedBtn">SEED +12</button><button class="btn event" id="eventBtn">RADIATION EVENT</button><button class="btn" id="clearBtn">RESET FIELD</button></div>
-</div>
-<div class="legend"><b>TOUCH / CLICK</b> to inject nutrients. Organisms forage, reproduce, inherit traits, mutate, and die. Births and close encounters become tones once audio is awake.</div>
-<div class="overlay" id="intro">
-  <section class="card"><div class="eyebrow">AUTONOMOUS MUSICAL ECOSYSTEM // RESTORED BUILD 01</div><h2>VECTOR<br>SOUP</h2><p>You do not steer an avatar. You alter the environment and watch a tiny population adapt. Their movement, lifespan, attraction, and pitch are inherited traits.</p><div class="intro-grid"><div><b>FEED THE FIELD</b><span>Click or touch to drop temporary nutrient blooms.</span></div><div><b>APPLY PRESSURE</b><span>Change resources, lifespan, and mutation while the population evolves.</span></div></div><div class="start-actions"><button class="btn primary" id="startBtn">START ECOSYSTEM</button><button class="btn" id="startAudioBtn">START + AUDIO</button></div></section>
-</div>
-<script>
-const canvas=document.getElementById('world'),ctx=canvas.getContext('2d');const ui={pop:document.getElementById('pop'),gen:document.getElementById('gen'),drift:document.getElementById('drift'),audio:document.getElementById('audioState'),n:document.getElementById('nutrients'),l:document.getElementById('lifespan'),m:document.getElementById('mutation'),nv:document.getElementById('nutrientVal'),lv:document.getElementById('lifeVal'),mv:document.getElementById('mutationVal'),intro:document.getElementById('intro')};
-let W=0,H=0,DPR=1,last=0,running=false,generation=0,baseGenome=null;let organisms=[],food=[],ripples=[];let audioCtx=null,master=null,delay=null;
-function resize(){DPR=Math.min(2,devicePixelRatio||1);W=innerWidth;H=innerHeight;canvas.width=Math.floor(W*DPR);canvas.height=Math.floor(H*DPR);ctx.setTransform(DPR,0,0,DPR,0,0)}addEventListener('resize',resize);resize();
-function rand(a,b){return a+Math.random()*(b-a)}function clamp(v,a,b){return Math.max(a,Math.min(b,v))}function pad(v){return String(v).padStart(3,'0')}
-function genome(seed){const g=seed?{...seed}:{speed:rand(.65,1.35),sense:rand(70,165),turn:rand(.5,1.7),social:rand(-.45,.8),pitch:rand(0,1),hue:rand(145,205),size:rand(2.6,5.8)};const m=Number(ui.m.value)/100;for(const k of ['speed','sense','turn','social','pitch','hue','size']){if(Math.random()<.7)g[k]+=rand(-m,m)*(k==='hue'?90:k==='sense'?65:k==='size'?2:.65)}g.speed=clamp(g.speed,.35,2);g.sense=clamp(g.sense,35,220);g.turn=clamp(g.turn,.15,2.6);g.social=clamp(g.social,-1,1);g.pitch=clamp(g.pitch,0,1);g.hue=(g.hue+360)%360;g.size=clamp(g.size,2,8);return g}
-class Organism{constructor(x,y,g,parentGen=0){this.x=x;this.y=y;this.vx=rand(-1,1);this.vy=rand(-1,1);this.g=genome(g);this.energy=rand(.55,.9);this.age=0;this.gen=parentGen;this.cool=rand(1,4)}update(dt){this.age+=dt;this.cool-=dt;let tx=0,ty=0,best=null,bd=this.g.sense;for(const f of food){const d=Math.hypot(f.x-this.x,f.y-this.y);if(d<bd){bd=d;best=f}}if(best){tx+=(best.x-this.x)/Math.max(1,bd);ty+=(best.y-this.y)/Math.max(1,bd)}for(const o of organisms){if(o===this)continue;const dx=o.x-this.x,dy=o.y-this.y,d=Math.hypot(dx,dy);if(d<55&&d>0){const f=this.g.social/d;tx+=dx*f;ty+=dy*f;if(d<11&&this.cool<=0){this.cool=1.4;encounterTone(this,o)}}}this.vx+=tx*this.g.turn*dt*2.2+rand(-1,1)*dt*.5;this.vy+=ty*this.g.turn*dt*2.2+rand(-1,1)*dt*.5;const s=Math.hypot(this.vx,this.vy)||1,max=this.g.speed*55;if(s>max){this.vx=this.vx/s*max;this.vy=this.vy/s*max}this.x+=this.vx*dt;this.y+=this.vy*dt;if(this.x<0)this.x+=W;if(this.x>W)this.x-=W;if(this.y<0)this.y+=H;if(this.y>H)this.y-=H;this.energy-=dt*(.007+.006*this.g.speed);for(let i=food.length-1;i>=0;i--){const f=food[i];if(Math.hypot(f.x-this.x,f.y-this.y)<10+this.g.size){this.energy=Math.min(1.4,this.energy+.22);food.splice(i,1);ripples.push({x:this.x,y:this.y,r:6,a:.45,h:this.g.hue})}}const life=.35+Number(ui.l.value)/100*.9;if(this.energy>1.08&&this.age>4&&organisms.length<110){this.energy*=.55;this.age=0;generation=Math.max(generation,this.gen+1);organisms.push(new Organism(this.x+rand(-8,8),this.y+rand(-8,8),this.g,this.gen+1));birthTone(this);ripples.push({x:this.x,y:this.y,r:8,a:.7,h:this.g.hue})}return this.energy>0&&this.age<life*90}draw(){ctx.save();ctx.translate(this.x,this.y);const ang=Math.atan2(this.vy,this.vx);ctx.rotate(ang);ctx.fillStyle=`hsl(${this.g.hue} 90% 62%)`;ctx.shadowBlur=12;ctx.shadowColor=`hsl(${this.g.hue} 90% 55%)`;ctx.beginPath();ctx.moveTo(this.g.size*1.8,0);ctx.lineTo(-this.g.size,this.g.size*.85);ctx.lineTo(-this.g.size,-this.g.size*.85);ctx.closePath();ctx.fill();ctx.shadowBlur=0;ctx.restore()}}
-function nutrient(x,y,count=Number(ui.n.value)){for(let i=0;i<count;i++)food.push({x:x+rand(-48,48),y:y+rand(-48,48),life:rand(10,24),phase:rand(0,6.28)});ripples.push({x,y,r:8,a:.8,h:92})}
-function seed(count=12){if(!baseGenome)baseGenome=genome();for(let i=0;i<count;i++)organisms.push(new Organism(rand(W*.22,W*.78),rand(H*.2,H*.75),baseGenome,0))}
-function reset(){organisms=[];food=[];ripples=[];generation=0;baseGenome=genome();seed(18);for(let i=0;i<6;i++)nutrient(rand(W*.15,W*.85),rand(H*.2,H*.75),6);sync()}
-function radiation(){const m=ui.m.value;ui.m.value=Math.min(45,Number(m)+18);for(const o of organisms)o.g=genome(o.g);ui.m.value=m;ripples.push({x:W/2,y:H/2,r:10,a:1,h:330});for(let i=0;i<4;i++)nutrient(rand(W*.15,W*.85),rand(H*.15,H*.8),5);sync();if(audioCtx)pulseTone(110,.45,'sawtooth',.04)}
-function ensureAudio(){if(audioCtx)return;audioCtx=new(window.AudioContext||window.webkitAudioContext)();master=audioCtx.createGain();master.gain.value=.22;delay=audioCtx.createDelay(.8);delay.delayTime.value=.19;const fb=audioCtx.createGain();fb.gain.value=.22;delay.connect(fb);fb.connect(delay);master.connect(audioCtx.destination);delay.connect(master);ui.audio.textContent='AUDIO AWAKE';ui.audio.classList.add('on')}
-function pulseTone(freq,dur=.16,type='sine',vol=.025){if(!audioCtx)return;const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(vol,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+dur);o.connect(g);g.connect(delay);g.connect(master);o.start();o.stop(audioCtx.currentTime+dur)}
-function pitch(g){const scale=[110,130.81,146.83,164.81,196,220,261.63,293.66,329.63,392,440,523.25];return scale[Math.floor(g.pitch*(scale.length-1))]}
-function birthTone(o){pulseTone(pitch(o.g),.22,'sine',.026)}function encounterTone(a,b){pulseTone((pitch(a.g)+pitch(b.g))/2,.07,'triangle',.012)}
-function sync(){ui.pop.textContent=pad(organisms.length);ui.gen.textContent=pad(generation);if(!baseGenome||!organisms.length)ui.drift.textContent='0%';else{let sum=0;for(const o of organisms)sum+=Math.abs(o.g.speed-baseGenome.speed)+Math.abs(o.g.pitch-baseGenome.pitch)+Math.abs(o.g.social-baseGenome.social);ui.drift.textContent=Math.min(999,Math.round(sum/organisms.length*42))+'%'}ui.nv.textContent=ui.n.value;ui.lv.textContent=ui.l.value+'%';ui.mv.textContent=ui.m.value+'%'}
-function update(dt){if(!running)return;for(let i=food.length-1;i>=0;i--){food[i].life-=dt;food[i].phase+=dt*4;if(food[i].life<=0)food.splice(i,1)}for(let i=organisms.length-1;i>=0;i--)if(!organisms[i].update(dt))organisms.splice(i,1);for(let i=ripples.length-1;i>=0;i--){ripples[i].r+=dt*85;ripples[i].a-=dt*.65;if(ripples[i].a<=0)ripples.splice(i,1)}if(organisms.length<5)seed(8);if(food.length<Number(ui.n.value)*2&&Math.random()<dt*.7)nutrient(rand(50,W-50),rand(90,H-80),3);sync()}
-function draw(){ctx.fillStyle='rgba(5,7,10,.24)';ctx.fillRect(0,0,W,H);ctx.strokeStyle='rgba(66,245,233,.045)';ctx.lineWidth=1;for(let x=0;x<W;x+=54){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke()}for(let y=0;y<H;y+=54){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke()}for(const f of food){const r=2.5+Math.sin(f.phase)*1.2;ctx.fillStyle='rgba(168,255,57,.85)';ctx.shadowBlur=10;ctx.shadowColor='#a8ff39';ctx.beginPath();ctx.arc(f.x,f.y,r,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0}for(const r of ripples){ctx.strokeStyle=`hsla(${r.h},90%,60%,${r.a})`;ctx.beginPath();ctx.arc(r.x,r.y,r.r,0,Math.PI*2);ctx.stroke()}for(const o of organisms)o.draw()}
-function loop(t){const dt=Math.min(.033,(t-last)/1000||0);last=t;update(dt);draw();requestAnimationFrame(loop)}requestAnimationFrame(loop);
-canvas.addEventListener('pointerdown',e=>nutrient(e.clientX,e.clientY));canvas.addEventListener('pointermove',e=>{if(e.buttons)nutrient(e.clientX,e.clientY,2)});
-for(const id of ['nutrients','lifespan','mutation'])document.getElementById(id).addEventListener('input',sync);document.getElementById('seedBtn').addEventListener('click',()=>seed(12));document.getElementById('eventBtn').addEventListener('click',radiation);document.getElementById('clearBtn').addEventListener('click',reset);document.getElementById('audioBtn').addEventListener('click',async()=>{ensureAudio();await audioCtx.resume()});document.getElementById('startBtn').addEventListener('click',()=>{reset();running=true;ui.intro.classList.add('hidden')});document.getElementById('startAudioBtn').addEventListener('click',async()=>{ensureAudio();await audioCtx.resume();reset();running=true;ui.intro.classList.add('hidden')});sync();draw();
-</script>
+
+    <!-- Upper Telemetry Bridge -->
+    <div class="telemetry-bridge">
+        <div class="sys-title">
+            <h1>Vector Soup</h1>
+            <span>Biologically Autonomous Generative Synthesizer</span>
+        </div>
+        <div class="live-stats">
+            <div class="stat-block">
+                <span class="stat-label">Active Organisms</span>
+                <span id="popReadout" class="stat-value green">000</span>
+            </div>
+            <div class="stat-block">
+                <span class="stat-label">System Generation</span>
+                <span id="genReadout" class="stat-value cyan">001</span>
+
+            </div>
+            <div class="stat-block">
+                <span class="stat-label">Ecosystem Mutation Drift</span>
+                <span id="driftReadout" class="stat-value magenta">0.00%</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Workspace Main Splitter -->
+    <div class="workspace">
+        <div class="viewport-pane">
+            <canvas id="simCanvas"></canvas>
+        </div>
+
+        <!-- Sidebar Parameter Rack -->
+        <div class="control-sidebar">
+            <div class="rack-card">
+                <h3>Acoustic Environment Mount</h3>
+                <button id="powerBtn" class="btn-ui btn-power">Mount Audio Substrate Context</button>
+
+            </div>
+
+            <div class="rack-card">
+                <h3>Environmental Pressures</h3>
+                <div class="param-group">
+                    <div class="param-row">
+                        <span>Nutrient Deposition Frequency</span>
+                        <span id="nutrientLabel">8 /sec</span>
+                    </div>
+                    <input id="nutrientSlider" type="range" min="1" max="25" step="1" value="8">
+                </div>
+                <div class="param-group">
+                    <div class="param-row">
+                        <span>Pheromone Decay Factor</span>
+                        <span id="decayLabel">0.92</span>
+                    </div>
+                    <input id="decaySlider" type="range" min="0.80" max="0.99" step="0.01" value="0.92">
+                </div>
+                <div class="param-group">
+
+                    <div class="param-row">
+                        <span>Genetic Mutation Rate</span>
+                        <span id="mutationSliderLabel">15%</span>
+                    </div>
+                    <input id="mutationSlider" type="range" min="2" max="50" step="1" value="15">
+                </div>
+            </div>
+
+            <div class="rack-card">
+                <h3>Mean Dynamic Population Genome</h3>
+                <div class="genome-bar-container">
+                    <div class="genome-bar-row">
+                        <div class="genome-label-strip"><span>Velocity Vector (Carrier Speed)</span><span id="gSpeedVal">0.0</span></div>
+                        <div class="genome-track-bg"><div id="gSpeedBar" class="genome-fill-bar" style="background-color: var(--accent-green);"></div></div>
+                    </div>
+                    <div class="genome-bar-row">
+                        <div class="genome-label-strip"><span>Perception Radian (Sensor Angle)</span><span id="gAngleVal">0.0</span></div>
+                        <div class="genome-track-bg"><div id="gAngleBar" class="genome-fill-bar" style="background-color: var(--accent-cyan);"></div></div>
+                    </div>
+
+                    <div class="genome-bar-row">
+                        <div class="genome-label-strip"><span>Perception Span (Sensor Distance)</span><span id="gDistVal">0.0</span></div>
+                        <div class="genome-track-bg"><div id="gDistBar" class="genome-fill-bar" style="background-color: #ffaa00;"></div></div>
+                    </div>
+                    <div class="genome-bar-row">
+                        <div class="genome-label-strip"><span>FM Harmonicity Inversion Factor</span><span id="gRatioVal">0.0</span></div>
+                        <div class="genome-track-bg"><div id="gRatioBar" class="genome-fill-bar" style="background-color: var(--accent-magenta);"></div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="rack-card">
+                <h3>Substrate Seeding Injectors</h3>
+                <button id="seedPopBtn" class="btn-ui">Inject Starter Protocells</button>
+                <button id="flashChaosBtn" class="btn-ui" style="border-color: var(--accent-magenta); color: #fda4af;">Induce Radiative Event</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        // --- Evolutionary Spatial & Generative Synthesis Architecture ---
+        class BioSynthesisMatrix {
+            constructor() {
+                this.ctx = null;
+                this.initialized = false;
+                
+                // Pure mathematical F Dorian fundamental matrix arrays to prevent raw pitch calculations breaking chord structure
+                this.harmonicScales = [54.91, 61.74, 65.41, 73.42, 82.41, 87.31, 98.00, 110.00, 130.81, 146.83, 164.81, 196.00, 220.00, 261.63, 293.66, 329.63, 392.00];
+            }
+
+            init() {
+                if (this.initialized) return;
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                this.ctx = new AudioCtx();
+
+                this.buildEcosystemAudioBusses();
+                this.initialized = true;
+            }
+
+
+            buildEcosystemAudioBusses() {
+                // Master Channel Strip Configurations
+                this.masterVCA = this.ctx.createGain();
+                this.masterVCA.gain.setValueAtTime(0.4, this.ctx.currentTime);
+
+                this.masterVCF = this.ctx.createBiquadFilter();
+                this.masterVCF.type = "lowpass";
+                this.masterVCF.frequency.setValueAtTime(1400, this.ctx.currentTime);
+                this.masterVCF.Q.setValueAtTime(1.8, this.ctx.currentTime);
+
+                // Space modeling delay infrastructure loops
+                this.delayLine = this.ctx.createDelay(1.0);
+                this.delayFeedback = this.ctx.createGain();
+                this.delayLine.delayTime.setValueAtTime(0.42, this.ctx.currentTime);
+                this.delayFeedback.gain.setValueAtTime(0.60, this.ctx.currentTime);
+
+                this.delayLine.connect(this.delayFeedback);
+                this.delayFeedback.connect(this.delayLine);
+
+
+                // Signal Flow Construction Topology
+                this.masterVCF.connect(this.masterVCA);
+                this.masterVCA.connect(this.delayLine);
+                this.masterVCA.connect(this.ctx.destination);
+                this.delayLine.connect(this.ctx.destination);
+
+                this.bootEcosystemBaseResonator();
+            }
+
+            bootEcosystemBaseResonator() {
+                // Generates an overarching acoustic field measuring spatial entity density
+                this.ambientGain = this.ctx.createGain();
+                this.ambientGain.gain.setValueAtTime(0.03, this.ctx.currentTime);
+
+                this.lowDroneOsc = this.ctx.createOscillator();
+                this.lowDroneOsc.type = "sine";
+                this.lowDroneOsc.frequency.setValueAtTime(65.41, this.ctx.currentTime); // C2 anchor points
+
+                this.lowDroneOsc.connect(this.ambientGain);
+
+                this.ambientGain.connect(this.masterVCF);
+                this.lowDroneOsc.start();
+            }
+
+            // Real-time linear FM audio synthesis voiced straight from mathematical organism metrics
+            triggerAcousticFissionEvent(genomeData, velocityFactor = 1.0) {
+                if (!this.initialized || this.ctx.state === "suspended") return;
+
+                // Derive absolute scale indexes dynamically using the current dominant ratio gene
+                let scaleIndex = Math.floor(genomeData.ratioFactor * this.harmonicScales.length);
+                scaleIndex = Math.max(0, Math.min(this.harmonicScales.length - 1, scaleIndex));
+                let carrierFrequency = this.harmonicScales[scaleIndex];
+
+                // Execute high-density Frequency Modulation equations logic parameters arrays
+                let ratioMultiplier = 0.5 + (genomeData.ratioFactor * 3.5);
+                let modulatingFrequency = carrierFrequency * ratioMultiplier;
+                
+                // Map sensor distances directly to FM synthesis index bounds (Harmonic Bite)
+                let modIntensityDeviation = modulatingFrequency * (genomeData.sensorDist * 0.4);
+
+
+                let carrierOsc = this.ctx.createOscillator();
+                let modulatorOsc = this.ctx.createOscillator();
+                let modGainNode = this.ctx.createGain();
+                let voiceEnvelopeVCA = this.ctx.createGain();
+
+                carrierOsc.type = "sine";
+                modulatorOsc.type = "sine";
+
+                carrierOsc.frequency.setValueAtTime(carrierFrequency, this.ctx.currentTime);
+                modulatorOsc.frequency.setValueAtTime(modulatingFrequency, this.ctx.currentTime);
+
+                // Apply ADSR linear transient calculation curves directly to voice envelopes
+                modGainNode.gain.setValueAtTime(modIntensityDeviation, this.ctx.currentTime);
+                modGainNode.gain.exponentialRampToValueAtTime(0.1, this.ctx.currentTime + 0.3);
+
+                voiceEnvelopeVCA.gain.setValueAtTime(0.0, this.ctx.currentTime);
+                // Sharp cellular division transient snap (6ms execution window)
+                voiceEnvelopeVCA.gain.linearRampToValueAtTime(0.18 * velocityFactor, this.ctx.currentTime + 0.006);
+                // Logarithmic lifespan decay slope
+
+                voiceEnvelopeVCA.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.5);
+
+                // Chain modular synthesizer matrix node connections
+                modulatorOsc.connect(modGainNode);
+                modGainNode.connect(carrierOsc.frequency);
+                carrierOsc.connect(voiceEnvelopeVCA);
+                voiceEnvelopeVCA.connect(this.masterVCF);
+
+                modulatorOsc.start();
+                carrierOsc.start();
+
+                let expirationWindow = this.ctx.currentTime + 0.55;
+                modulatorOsc.stop(expirationWindow);
+                carrierOsc.stop(expirationWindow);
+            }
+
+            modulateGlobalAtmosphereChannels(meanSpeed, meanAngle, meanDist) {
+                if (!this.initialized) return;
+
+
+                // Dynamic vector calculation mappings link mean population metrics directly to system acoustics
+                let targetFilterCutoff = 300 + (meanAngle * 2500);
+                this.masterVCF.frequency.setTargetAtTime(Math.max(150, targetFilterCutoff), this.ctx.currentTime, 0.1);
+
+                let calculatedEchoFeedback = 0.15 + (meanSpeed * 0.65);
+                calculatedEchoFeedback = Math.max(0.05, Math.min(0.88, calculatedEchoFeedback));
+                this.delayFeedback.gain.setTargetAtTime(calculatedEchoFeedback, this.ctx.currentTime, 0.2);
+
+                // Modulate ambient core oscillation speeds symmetrically
+                let dronePitchShift = 65.41 + (meanDist * 40.0);
+                this.lowDroneOsc.frequency.setTargetAtTime(dronePitchShift, this.ctx.currentTime, 0.3);
+            }
+        }
+
+        // --- Autonomous Protocell Agent Logic Entity Class ---
+        class GeneticProtocellAgent {
+            constructor(x, y, parentalGenome = null, mutationIntensity = 0.15) {
+                this.x = x;
+                this.y = y;
+
+                this.angle = Math.random() * Math.PI * 2;
+                this.energy = 1.0; // Health matrix depletion vectors
+                this.age = 0;
+
+                // Underlying numerical genetic blueprint structural components mapping array matrices
+                if (parentalGenome) {
+                    this.genome = {
+                        speed: this.clampGene(parentalGenome.speed + (Math.random() * 2 - 1) * mutationIntensity, 0.5, 4.5),
+                        sensorAngle: this.clampGene(parentalGenome.sensorAngle + (Math.random() * 2 - 1) * mutationIntensity, 0.1, Math.PI / 2),
+                        sensorDist: this.clampGene(parentalGenome.sensorDist + (Math.random() * 2 - 1) * (mutationIntensity * 25), 5, 50),
+                        ratioFactor: this.clampGene(parentalGenome.ratioFactor + (Math.random() * 2 - 1) * mutationIntensity, 0.0, 1.0)
+                    };
+                } else {
+                    // Raw absolute structural assignments for baseline parent ancestors
+                    this.genome = {
+                        speed: 1.0 + Math.random() * 2.5,
+                        sensorAngle: 0.2 + Math.random() * (Math.PI / 3),
+                        sensorDist: 10 + Math.random() * 30,
+                        ratioFactor: Math.random()
+
+                    };
+                }
+            }
+
+            clampGene(val, min, max) {
+                return Math.max(min, Math.min(max, val));
+            }
+
+            // High-fidelity sensor integration array mimicking transport optimization equations (Jones-McKenna slime mold models)
+            executePerceptualSensoryCalculations(width, height, diffuseMatrixBuffer) {
+                let senseLeft = this.readSensorVectorWeight(this.angle - this.genome.sensorAngle, this.genome.sensorDist, width, height, diffuseMatrixBuffer);
+                let senseCenter = this.readSensorVectorWeight(this.angle, this.genome.sensorDist, width, height, diffuseMatrixBuffer);
+                let senseRight = this.readSensorVectorWeight(this.angle + this.genome.sensorAngle, this.genome.sensorDist, width, height, diffuseMatrixBuffer);
+
+                // Direct bio-inspired decision algorithms
+                if (senseCenter > senseLeft && senseCenter > senseRight) {
+                    // Maintain current absolute structural paths trajectory
+                } else if (senseLeft > senseRight) {
+                    this.angle -= this.genome.sensorAngle * 0.45;
+
+                } else if (senseRight > senseLeft) {
+                    this.angle += this.genome.sensorAngle * 0.45;
+                } else {
+                    // Randomized microtonal drift when coordinate zones measure equivalent vacuum arrays
+                    this.angle += (Math.random() * 2 - 1) * 0.2;
+                }
+
+                // Append physical positional coordinate displacements
+                this.x += Math.cos(this.angle) * this.genome.speed;
+                this.y += Math.sin(this.angle) * this.genome.speed;
+
+                // Strict spatial border wrapping boundary configurations
+                if (this.x < 0) this.x += width; if (this.x >= width) this.x -= width;
+                if (this.y < 0) this.y += height; if (this.y >= height) this.y -= height;
+
+                // Ambient baseline metabolic runtime wear down constants
+                this.energy -= 0.0028;
+                this.age++;
+            }
+
+
+            readSensorVectorWeight(angleOffset, distance, w, h, matrix) {
+                let sensorX = Math.floor(this.x + Math.cos(angleOffset) * distance);
+                let sensorY = Math.floor(this.y + Math.sin(angleOffset) * distance);
+
+                // Handle out-of-bounds sensory array shifts safely
+                if (sensorX < 0) sensorX += w; if (sensorX >= w) sensorX -= w;
+                if (sensorY < 0) sensorY += h; if (sensorY >= h) sensorY -= h;
+
+                let index = (sensorY * w + sensorX) * 4;
+                return matrix[index + 1]; // Sample the specialized fluorescent green channel value matrix array
+            }
+        }
+
+        // --- Core Ecosystem Performance Grid Coordinator Class ---
+        class MorphogeneticSimulationEcosystem {
+            constructor() {
+                this.canvas = document.getElementById("simCanvas");
+                this.ctx = this.canvas.getContext("2d");
+                this.audio = new BioSynthesisMatrix();
+
+
+                // Core parameter tracking models
+                this.population = [];
+                this.generationCounter = 1;
+                this.baseMutationIntensity = 0.15;
+                this.nutrientFrequency = 8;
+                this.pheromoneDecay = 0.92;
+                this.totalAncestralMutationsCount = 0;
+
+                this.configureEcosystemSizing();
+                this.mountUIEventHooks();
+                
+                // Set up baseline operational structures
+                this.seedProtocellMatrix(45);
+                this.beginEcosystemLoopProcessing();
+            }
+
+            configureEcosystemSizing() {
+                this.canvas.width = Math.floor(this.canvas.parentElement.clientWidth / 2); // Internal render grid optimization mapping scale arrays
+                this.canvas.height = Math.floor(this.canvas.parentElement.clientHeight / 2);
+
+                this.canvas.style.width = "100%";
+                this.canvas.style.height = "100%";
+
+                // Instantiating trail tracking layers buffers models arrays
+                this.ctx.fillStyle = "#000000";
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+            }
+
+            mountUIEventHooks() {
+                document.getElementById("powerBtn").addEventListener("click", (e) => {
+                    this.audio.init();
+                    e.target.textContent = "Acoustic Substrate Live";
+                    e.target.classList.add("btn-power");
+                });
+
+                document.getElementById("nutrientSlider").addEventListener("input", (e) => {
+                    this.nutrientFrequency = parseInt(e.target.value);
+                    document.getElementById("nutrientLabel").textContent = `${this.nutrientFrequency} /sec`;
+                });
+
+
+                document.getElementById("decaySlider").addEventListener("input", (e) => {
+                    this.pheromoneDecay = parseFloat(e.target.value);
+                    document.getElementById("decayLabel").textContent = this.pheromoneDecay.toFixed(2);
+                });
+
+                document.getElementById("mutationSlider").addEventListener("input", (e) => {
+                    this.baseMutationIntensity = parseInt(e.target.value) / 100;
+                    document.getElementById("mutationSliderLabel").textContent = `${e.target.value}%`;
+                });
+
+                document.getElementById("seedPopBtn").addEventListener("click", () => this.seedProtocellMatrix(30));
+                document.getElementById("flashChaosBtn").addEventListener("click", () => this.triggerRadiativeChaosMutation());
+                
+                window.addEventListener("resize", () => this.configureEcosystemSizing());
+            }
+
+            seedProtocellMatrix(count) {
+                let w = this.canvas.width;
+                let h = this.canvas.height;
+
+                for (let i = 0; i < count; i++) {
+                    this.population.push(new GeneticProtocellAgent(Math.random() * w, Math.random() * h));
+                }
+            }
+
+            triggerRadiativeChaosMutation() {
+                this.totalAncestralMutationsCount += 0.50; // Artificially accelerate total measured genetic shift trackers
+                this.population.forEach(agent => {
+                    agent.genome.speed = Math.max(0.5, Math.min(4.5, agent.genome.speed + (Math.random() * 2 - 1) * 1.5));
+                    agent.genome.sensorAngle = Math.max(0.1, Math.min(Math.PI/2, agent.genome.sensorAngle + (Math.random() * 2 - 1) * 0.6));
+                });
+                if (this.audio.initialized) {
+                    this.audio.triggerAcousticFissionEvent({ ratioFactor: 0.95, sensorDist: 45.0 }, 1.5);
+                }
+            }
+
+            beginEcosystemLoopProcessing() {
+                const clockTick = () => {
+                    this.processEcosystemGenerativeCalculations();
+
+                    this.drawEcosystemGraphicsContexts();
+                    requestAnimationFrame(clockTick);
+                };
+                requestAnimationFrame(clockTick);
+            }
+
+            processEcosystemGenerativeCalculations() {
+                let w = this.canvas.width;
+                let h = this.canvas.height;
+
+                // Process spatial nutrient drop distributions
+                let adaptiveSpawnsPerFrame = (this.nutrientFrequency / 60);
+                let integerSpawns = Math.floor(adaptiveSpawnsPerFrame);
+                if (Math.random() < (adaptiveSpawnsPerFrame - integerSpawns)) integerSpawns += 1;
+
+                // Extract direct time-domain data maps from baseline canvas pixels to drive agent perception calculations
+                let canvasImageBuffer = this.ctx.getImageData(0, 0, w, h);
+                let matrixBuffer = canvasImageBuffer.data;
+
+
+                // Inject nutrients directly into substrate grid layers using absolute coordinate conversions
+                for (let n = 0; n < integerSpawns; n++) {
+                    let rx = Math.floor(Math.random() * w);
+                    let ry = Math.floor(Math.random() * h);
+                    let pIdx = (ry * w + rx) * 4;
+                    matrixBuffer[pIdx + 1] = 255; // Saturate perceptual green fluorescent nutrient fields
+                }
+
+                // Process life cycling, fission replication, and death thresholds matrices
+                let totalSpeed = 0, totalAngle = 0, totalDist = 0, totalRatio = 0;
+                let popLen = this.population.length;
+
+                for (let i = popLen - 1; i >= 0; i--) {
+                    let agent = this.population[i];
+                    agent.executePerceptualSensoryCalculations(w, h, matrixBuffer);
+
+                    // Read local substrate nutrient tracking maps index vectors positions
+                    let currentCoordX = Math.floor(agent.x);
+                    let currentCoordY = Math.floor(agent.y);
+
+                    if (currentCoordX >= 0 && currentCoordX < w && currentCoordY >= 0 && currentCoordY < h) {
+                        let cellPixelIndex = (currentCoordY * w + currentCoordX) * 4;
+                        
+                        // Interaction: Check if agent overlaps high-nutrient tracking field parameters
+                        if (matrixBuffer[cellPixelIndex + 1] > 140) {
+                            agent.energy = Math.min(2.0, agent.energy + 0.45);
+                            matrixBuffer[cellPixelIndex + 1] = 40; // Deplete local nutrient values array
+                            matrixBuffer[cellPixelIndex + 2] = 200; // Deposit high trail values index
+                        }
+                    }
+
+                    // Sum traits for global averages metrics analysis tracking arrays
+                    totalSpeed += agent.genome.speed;
+                    totalAngle += agent.genome.sensorAngle;
+                    totalDist += agent.genome.sensorDist;
+                    totalRatio += agent.genome.ratioFactor;
+
+                    // Validation Threshold check: Cellular Replication vs Starvation Lifespan gates
+                    if (agent.energy >= 1.75 && this.population.length < 250) {
+
+                        agent.energy -= 0.85;
+                        let childAgent = new GeneticProtocellAgent(agent.x, agent.y, agent.genome, this.baseMutationIntensity);
+                        this.population.push(childAgent);
+                        
+                        this.totalAncestralMutationsCount += (this.baseMutationIntensity * 0.05);
+                        this.generationCounter++;
+
+                        // Trigger dynamic polyphonic sound plucks directly from child organism properties
+                        if (this.audio.initialized) {
+                            this.audio.triggerAcousticFissionEvent(childAgent.genome, 0.7);
+                        }
+                    } else if (agent.energy <= 0) {
+                        // Evict starved cell arrays from storage heap vectors
+                        this.population.splice(i, 1);
+                    }
+                }
+
+                // Commit live pixel configuration structures updates straight back to system frame pipelines
+                this.ctx.putImageData(canvasImageBuffer, 0, 0);
+
+
+                // Compute mean genetic drift indicators to drive global ambient modulation parameters
+                if (this.population.length > 0) {
+                    let avgSpeed = totalSpeed / this.population.length;
+                    let avgAngle = totalAngle / this.population.length;
+                    let avgDist = totalDist / this.population.length;
+                    let avgRatio = totalRatio / this.population.length;
+
+                    this.audio.modulateGlobalAtmosphereChannels(avgSpeed / 4.5, avgAngle / (Math.PI / 2), avgDist / 50.0);
+                    this.updateDOMControlTelemetryRack(avgSpeed, avgAngle, avgDist, avgRatio);
+                } else {
+                    // Automatically re-seed system layers if population experiences zero extinction events
+                    this.seedProtocellMatrix(25);
+                }
+            }
+
+            updateDOMControlTelemetryRack(s, a, d, r) {
+                document.getElementById("popReadout").textContent = String(this.population.length).padStart(3, '0');
+                document.getElementById("genReadout").textContent = String(this.generationCounter).padStart(3, '0');
+                document.getElementById("driftReadout").textContent = (this.totalAncestralMutationsCount * 10).toFixed(2) + "%";
+
+
+                // Map numerical updates straight into the macro panel bar dimensions
+                document.getElementById("gSpeedVal").textContent = s.toFixed(2);
+                document.getElementById("gSpeedBar").style.width = `${(s / 4.5) * 100}%`;
+
+                document.getElementById("gAngleVal").textContent = (a * (180 / Math.PI)).toFixed(1) + "°";
+                document.getElementById("gAngleBar").style.width = `${(a / (Math.PI / 2)) * 100}%`;
+
+                document.getElementById("gDistVal").textContent = d.toFixed(1) + "px";
+                document.getElementById("gDistBar").style.width = `${(d / 50.0) * 100}%`;
+
+                document.getElementById("gRatioVal").textContent = (0.5 + (r * 3.5)).toFixed(2) + "x";
+                document.getElementById("gRatioBar").style.width = `${r * 100}%`;
+            }
+
+            drawEcosystemGraphicsContexts() {
+                let w = this.canvas.width;
+                let h = this.canvas.height;
+
+                // Apply continuous 2D fading trail decay and coordinate blur diffusion math parameters loops
+
+                this.ctx.save();
+                this.ctx.globalCompositeOperation = "background"; 
+                this.ctx.fillStyle = `rgba(4, 6, 11, ${1 - this.pheromoneDecay})`;
+                this.ctx.fillRect(0, 0, w, h);
+                this.ctx.restore();
+
+                // Draw specific localized visual shapes representing active tracking cellular bodies vector locations
+                this.ctx.save();
+                this.population.forEach(agent => {
+                    this.ctx.fillStyle = this.audio.initialized ? "rgba(0, 240, 255, 0.45)" : "rgba(255, 255, 255, 0.25)";
+                    this.ctx.fillRect(Math.floor(agent.x), Math.floor(agent.y), 1.5, 1.5);
+                });
+                this.ctx.restore();
+            }
+        }
+
+        // Window entry confirmation attachment lifecycle bootstrap hook
+        window.onload = () => {
+            window.soupSimApplication = new MorphogeneticSimulationEcosystem();
+
+        };
+    </script>
 </body>
 </html>
+

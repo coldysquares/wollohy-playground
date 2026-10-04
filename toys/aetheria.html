@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aetheria: Generative Audio-Visual Synth Ecosystem</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #03030a;
+            font-family: '-apple-system', BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+            color: #ffffff;
+        }
+        #canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            z-index: 1;
+        }
+        
+        /* Integrated Cyber HUD Panel */
+        .game-interface {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+
+            z-index: 10;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 25px;
+        }
+        .header-hud {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+        .hud-card {
+            background: rgba(6, 6, 20, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 255, 235, 0.25);
+            padding: 12px 24px;
+
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 255, 235, 0.05);
+            display: flex;
+            gap: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+        .hud-card span {
+            color: #00ffeb;
+            text-shadow: 0 0 10px rgba(0, 255, 235, 0.5);
+        }
+        .ecosystem-label {
+            background: rgba(6, 6, 20, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 0, 255, 0.25);
+            padding: 12px 24px;
+
+            border-radius: 16px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #ff00ff;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(255, 0, 255, 0.3);
+        }
+        
+        /* Bottom Control Panel Configuration */
+        .bottom-deck {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            width: 100%;
+            pointer-events: auto;
+        }
+        .deck-controls {
+            background: rgba(6, 6, 20, 0.8);
+            backdrop-filter: blur(16px);
+
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 20px;
+            width: 320px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .deck-controls h3 {
+            font-size: 12px;
+            color: #8888aa;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 2px;
+        }
+        .control-row {
+            display: flex;
+
+            gap: 10px;
+        }
+        .action-btn {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            padding: 10px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+        }
+        .action-btn:hover {
+            background: #00ffeb;
+
+            color: #03030a;
+            border-color: #00ffeb;
+            box-shadow: 0 0 15px rgba(0, 255, 235, 0.4);
+        }
+        .action-btn.active-mode {
+            background: rgba(0, 255, 235, 0.1);
+            border-color: #00ffeb;
+            color: #00ffeb;
+        }
+        .file-input-container {
+            position: relative;
+            overflow: hidden;
+            flex: 1;
+        }
+        .file-input-container input[type="file"] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+
+            cursor: pointer;
+            height: 100%;
+            width: 100%;
+        }
+
+        /* Full Screen Overlay Screens Matrix */
+        .stage-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(3, 3, 10, 0.95);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+
+            text-align: center;
+            transition: opacity 0.5s ease;
+            pointer-events: auto;
+        }
+        .stage-card {
+            background: rgba(12, 12, 32, 0.6);
+            border: 1px solid rgba(0, 255, 235, 0.2);
+            padding: 40px;
+            border-radius: 24px;
+            max-width: 440px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 40px rgba(0, 255, 235, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .stage-card h1 {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: 4px;
+            margin-bottom: 16px;
+
+            background: linear-gradient(45deg, #00ffeb, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .stage-card p {
+            font-size: 13px;
+            color: #a0a0c0;
+            line-height: 1.6;
+            margin-bottom: 28px;
+        }
+        .launch-btn {
+            background: linear-gradient(135deg, #00ffeb 0%, #00bfff 100%);
+            border: none;
+            color: #03030a;
+            padding: 14px 40px;
+            font-size: 13px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(0, 255, 235, 0.3);
+            transition: all 0.3s ease;
+        }
+        .launch-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(0, 255, 235, 0.5);
+        }
+        .hidden-structure {
+            display: none !important;
+            opacity: 0;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. Master Start Launch Control Overlay Container -->
+
+    <div id="overlay-start" class="stage-overlay">
+        <div class="stage-card">
+            <h1>AETHERIA</h1>
+            <p>An evolving generative audio-visual flora ecosystem. Move your cursor to ripple space, weave lush musical textures, and absorb glowing harmonic spores while out-surfing dissonant cosmic decay spikes.</p>
+            <button id="btn-launch" class="launch-btn">Initialize Core</button>
+        </div>
+    </div>
+
+    <!-- 2. Master Game Over Layout Container -->
+    <div id="overlay-gameover" class="stage-overlay hidden-structure">
+        <div class="stage-card" style="border-color: rgba(255, 0, 85, 0.3); box-shadow: 0 0 40px rgba(255, 0, 85, 0.1);">
+            <h1 style="background: linear-gradient(45deg, #ff0055, #ff00aa); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">ECOSYSTEM CRASHED</h1>
+            <p>Your audio-reactive vessel lost systemic harmonic alignment. The generated spatial arpeggio sequence has faded back into dark matter.</p>
+            <button id="btn-restart" class="launch-btn" style="background: linear-gradient(135deg, #ff0055 0%, #ff00aa 100%); box-shadow: 0 8px 24px rgba(255, 0, 85, 0.3); color: #fff;">Re-Tune Matrix</button>
+        </div>
+    </div>
+
+    <!-- Main Live Game Telemetry Interface HUD -->
+    <div class="game-interface">
+
+        <div class="header-hud">
+            <div class="hud-card">
+                <div>Score: <span id="txt-score">00000</span></div>
+                <div>Shield: <span id="txt-hp" style="color: #ff0055;">100%</span></div>
+                <div>Combo: <span id="txt-mult" style="color: #ff00ff;">x1.0</span></div>
+            </div>
+            <div id="txt-chord-label" class="ecosystem-label">Harmonic Scale: C Pentatonic</div>
+        </div>
+
+        <div class="bottom-deck">
+            <div class="deck-controls">
+                <h3>Acoustic Audio Deck</h3>
+                <div id="lbl-engine-status" style="font-size:10px;color:#8888aa;letter-spacing:1px;">ARCADE DECK</div>
+                <div class="control-row">
+                    <div class="file-input-container">
+                        <button class="action-btn" style="width: 100%;">Upload MP3</button>
+                        <input type="file" id="input-file" accept="audio/*">
+                    </div>
+                    <button id="btn-mic" class="action-btn">Link Mic</button>
+                </div>
+
+                <h3>Ecosystem Fields</h3>
+                <div class="control-row">
+                    <button id="btn-fld-vortex" class="action-btn active-mode">Vortex Pull</button>
+                    <button id="btn-fld-linear" class="action-btn">Repel Grid</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <canvas id="canvas"></canvas>
+    <audio id="core-audio-el" crossorigin="anonymous" loop></audio>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const audioEl = document.getElementById('core-audio-el');
+
+        // Robust consolidated state metrics container
+        let sysState = {
+
+            score: 0,
+            hp: 100,
+            multiplier: 1.0,
+            active: false,
+            fieldMode: 'vortex', // 'vortex' or 'repel'
+            chordIndex: 0,
+            tempoClock: 0,
+            shakeIntensity: 0
+        };
+
+        let cursor = { x: window.innerWidth / 2, y: window.innerHeight / 2, targetX: window.innerWidth / 2, targetY: window.innerHeight / 2, radius: 22, squash: 1 };
+        
+        // Entity Spawning Management Arrays Pools
+        let ambientSpores = [];
+        let decaySpikes = [];
+        let particleSplinters = [];
+        let floatingNotifiers = [];
+        let visualBackgroundStars = [];
+
+
+        // Web Audio Synthesizer Matrix Nodes Trackers
+        let webAudioCtx = null;
+        let masterAnalyser = null;
+        let frequencyDataArray = null;
+        let audioSourceNode = null;
+        let activeHardwareMicStream = null;
+        let delayFeedbackNode = null;
+
+        // Initialize Passive Visual Background Stardust Layer
+        function initBackgroundStardust() {
+            visualBackgroundStars = [];
+            for (let i = 0; i < 75; i++) {
+                visualBackgroundStars.push({
+                    x: Math.random() * window.innerWidth,
+                    y: Math.random() * window.innerHeight,
+                    size: Math.random() * 2 + 0.5,
+                    speedFactor: Math.random() * 0.3 + 0.1,
+                    huePhase: Math.random() * Math.PI
+                });
+
+            }
+        }
+
+        function resizeViewportHandler() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            if (!sysState.active) {
+                cursor.x = cursor.targetX = canvas.width / 2;
+                cursor.y = cursor.targetY = canvas.height / 2;
+            }
+            initBackgroundStardust();
+        }
+        window.addEventListener('resize', resizeViewportHandler);
+        resizeViewportHandler();
+
+        // --- Lush Generative Web Audio Synthesis Architecture ---
+        function setupEcosystemAudioEngine() {
+            if (webAudioCtx) return;
+            
+
+            // Standard cross-browser AudioContext initialization
+            webAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            masterAnalyser = webAudioCtx.createAnalyser();
+            masterAnalyser.fftSize = 64;
+            frequencyDataArray = new Uint8Array(masterAnalyser.frequencyBinCount);
+
+            // Establish Lush Ambient Echo Feedback Network
+            delayFeedbackNode = webAudioCtx.createDelay();
+            delayFeedbackNode.delayTime.setValueAtTime(0.35, webAudioCtx.currentTime);
+            
+            const echoGain = webAudioCtx.createGain();
+            echoGain.gain.setValueAtTime(0.45, webAudioCtx.currentTime);
+
+            // Connect routing pathways: Synth Sources -> Delay Matrix -> Echo Decay Loop -> Output Hardware
+            delayFeedbackNode.connect(echoGain);
+            echoGain.connect(delayFeedbackNode); // Recursive loop path
+            
+            masterAnalyser.connect(webAudioCtx.destination);
+            delayFeedbackNode.connect(masterAnalyser);
+
+        }
+
+        // Pristine Linear Envelope Polyphonic FM Synthesizer Node Pair
+        function synthesizeHarmonicVoice(carrierFreq, modulatorFreq, modulationIndex, attackTime, releaseTime, outputVolume) {
+            if (!webAudioCtx) return;
+
+            const carrierOsc = webAudioCtx.createOscillator();
+            const modulatorOsc = webAudioCtx.createOscillator();
+            const modulationGain = webAudioCtx.createGain();
+            const voiceEnvelopeGain = webAudioCtx.createGain();
+
+            // Set carrier waveform textures to smooth triangle profiles
+            carrierOsc.type = 'triangle';
+            carrierOsc.frequency.setValueAtTime(carrierFreq, webAudioCtx.currentTime);
+
+            // Modulator profiles handle frequency sweeps
+            modulatorOsc.type = 'sine';
+            modulatorOsc.frequency.setValueAtTime(modulatorFreq, webAudioCtx.currentTime);
+            
+
+            modulationGain.gain.setValueAtTime(modulationIndex, webAudioCtx.currentTime);
+            voiceEnvelopeGain.gain.setValueAtTime(0.001, webAudioCtx.currentTime);
+            
+            // Apply click-free attack and exponential release ramp curves
+            voiceEnvelopeGain.gain.linearRampToValueAtTime(outputVolume, webAudioCtx.currentTime + attackTime);
+            voiceEnvelopeGain.gain.exponentialRampToValueAtTime(0.001, webAudioCtx.currentTime + attackTime + releaseTime);
+
+            // Connect modulating synthesis channels paths
+            modulatorOsc.connect(modulationGain);
+            modulationGain.connect(carrierOsc.frequency);
+            
+            carrierOsc.connect(voiceEnvelopeGain);
+            voiceEnvelopeGain.connect(masterAnalyser);
+            voiceEnvelopeGain.connect(delayFeedbackNode); // Parallel delay routing injection
+
+            modulatorOsc.start();
+            carrierOsc.start();
+            
+            modulatorOsc.stop(webAudioCtx.currentTime + attackTime + releaseTime + 0.1);
+
+            carrierOsc.stop(webAudioCtx.currentTime + attackTime + releaseTime + 0.1);
+        }
+
+        // Algorithmic Procedural Background Sequencer Progression Chords Array Matrix
+        const generativeChordsProgressionMatrix = [
+            { name: "Amethyst Nebula (A Minor 9)", notes: [220.00, 261.63, 329.63, 392.00, 493.88] },
+            { name: "Cyan Horizon (C Major 9)", notes: [261.63, 329.63, 392.00, 493.88, 587.33] },
+            { name: "Solaris Flare (F Major 7)", notes: [174.61, 218.27, 261.63, 329.63, 392.00] },
+            { name: "Event Horizon (E Minor 11)", notes: [164.81, 196.00, 246.94, 293.66, 349.23] }
+        ];
+
+        function runGenerativeMetronomeTick() {
+            if (!sysState.active) return;
+            sysState.tempoClock++;
+
+            // Every 160 frames, algorithmically shift the core chords progression
+            if (sysState.tempoClock % 160 === 0) {
+                sysState.chordIndex = (sysState.chordIndex + 1) % generativeChordsProgressionMatrix.length;
+                document.getElementById('txt-chord-label').textContent = `Scale: ${generativeChordsProgressionMatrix[sysState.chordIndex].name}`;
+
+            }
+
+            // Arpeggiate background synth atmosphere pulses based on active intervals
+            if (sysState.tempoClock % 20 === 0) {
+                const currentScaleNotes = generativeChordsProgressionMatrix[sysState.chordIndex].notes;
+                const pickedNote = currentScaleNotes[Math.floor(Math.random() * currentScaleNotes.length)];
+                // Fire soft, high-fidelity ambient drone voice pads
+                synthesizeHarmonicVoice(pickedNote, pickedNote * 0.5, 40, 0.4, 1.2, 0.08);
+            }
+        }
+
+        function triggerCollectionSporeChimeSynth(comboMultiplier) {
+            const scaleNotes = generativeChordsProgressionMatrix[sysState.chordIndex].notes;
+            // Generate clear crystal cascading chime pitches mapped to combo multiplier variables
+            const stepIndex = Math.min(scaleNotes.length - 1, Math.floor((comboMultiplier - 1) * 1.5)) % scaleNotes.length;
+            const targetPitch = scaleNotes[stepIndex] * 2.0; 
+            synthesizeHarmonicVoice(targetPitch, targetPitch * 1.5, 80, 0.04, 0.4, 0.16);
+        }
+
+
+        function triggerDissonantCrashSynth() {
+            // Deploy deep dark sub-frequency impact sweep
+            synthesizeHarmonicVoice(75, 110, 250, 0.02, 0.6, 0.35);
+        }
+
+        // --- Custom Stream Media Deck File Upload Ingestions ---
+        document.getElementById('input-file').addEventListener('change', function(e) {
+            setupEcosystemAudioEngine();
+            if (webAudioCtx.state === 'suspended') webAudioCtx.resume();
+            
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            terminateActiveAcousticLinks();
+            audioEl.src = URL.createObjectURL(file);
+            
+            audioSourceNode = webAudioCtx.createMediaElementSource(audioEl);
+            audioSourceNode.connect(masterAnalyser);
+            audioEl.play().then(() => {
+
+                document.getElementById('lbl-engine-status').textContent = "DECK: AUDIO FILE STREAM";
+            }).catch(err => console.error(err));
+        });
+
+        document.getElementById('btn-mic').addEventListener('click', function() {
+            setupEcosystemAudioEngine();
+            if (webAudioCtx.state === 'suspended') webAudioCtx.resume();
+
+            if (activeHardwareMicStream) {
+                terminateActiveAcousticLinks();
+                this.textContent = "LINK MIC";
+                this.classList.remove('active-mode');
+                document.getElementById('lbl-engine-status').textContent = "ARCADE DECK";
+                return;
+            }
+
+            navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+                .then(stream => {
+                    terminateActiveAcousticLinks();
+
+                    activeHardwareMicStream = stream;
+                    audioSourceNode = webAudioCtx.createMediaStreamSource(stream);
+                    audioSourceNode.connect(masterAnalyser);
+                    this.textContent = "MIC ON";
+                    this.classList.add('active-mode');
+                    document.getElementById('lbl-engine-status').textContent = "DECK: HARDWARE MICROPHONE";
+                }).catch(err => console.warn("Mic connection bypassed:", err));
+        });
+
+        function terminateActiveAcousticLinks() {
+            audioEl.pause();
+            if (activeHardwareMicStream) {
+                activeHardwareMicStream.getTracks().forEach(track => track.stop());
+                activeHardwareMicStream = null;
+            }
+            if (audioSourceNode) {
+                audioSourceNode.disconnect();
+                audioSourceNode = null;
+            }
+
+            document.getElementById('btn-mic').textContent = "LINK MIC";
+            document.getElementById('btn-mic').classList.remove('active-mode');
+        }
+
+        // --- Fields Matrix Operations Handlers ---
+        document.getElementById('btn-fld-vortex').addEventListener('click', function() {
+            sysState.fieldMode = 'vortex';
+            this.classList.add('active-mode');
+            document.getElementById('btn-fld-linear').classList.remove('active-mode');
+        });
+        document.getElementById('btn-fld-linear').addEventListener('click', function() {
+            sysState.fieldMode = 'repel';
+            this.classList.add('active-mode');
+            document.getElementById('btn-fld-vortex').classList.remove('active-mode');
+        });
+
+        // --- Continuous Focus Motion Vectors Captures ---
+        function trackingUpdatePosition(x, y) {
+            cursor.targetX = x;
+
+            cursor.targetY = y;
+        }
+        window.addEventListener('mousemove', (e) => { trackingUpdatePosition(e.clientX, e.clientY); });
+        window.addEventListener('touchmove', (e) => {
+            if (e.touches.length > 0) trackingUpdatePosition(e.touches[0].clientX, e.touches[0].clientY);
+        }, { passive: true });
+
+        // --- High Juice Particle Generation Factories Pools ---
+        function igniteStardustExplosion(x, y, color) {
+            for (let i = 0; i < 16; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const magnitude = Math.random() * 5.5 + 2.0;
+                particleSplinters.push({
+                    x: x, y: y,
+                    vx: Math.cos(angle) * magnitude, vy: Math.sin(angle) * magnitude,
+                    radius: Math.random() * 3.0 + 1.0, colorHex: color, alpha: 1.0
+                });
+            }
+        }
+
+
+        function createFloatingIndicatorNotifier(textString, x, y, color) {
+            floatingNotifiers.push({ text: textString, x: x, y: y, color: color, alpha: 1.0, velocityY: -1.4 });
+        }
+
+        function updateSpawningEcosystemArrays() {
+            runGenerativeMetronomeTick();
+            let realtimeSoundAmplitude = 0;
+
+            if (masterAnalyser && frequencyDataArray) {
+                masterAnalyser.getByteFrequencyData(frequencyDataArray);
+                // Extract realtime sound metrics snapshot
+                realtimeSoundAmplitude = frequencyDataArray[4] || 0;
+            }
+
+            // Procedurally spawn green harmonic spores based on rhythm ticks or sound peaks
+            if (Math.random() < 0.045 || (realtimeSoundAmplitude > 170 && Math.random() < 0.18)) {
+                ambientSpores.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * (canvas.height * 0.4) - 30, // Drop down gracefully from upper registers
+
+                    vx: (Math.random() - 0.5) * 2,
+                    vy: Math.random() * 2.0 + 2.5 + (sysState.multiplier * 0.1),
+                    radius: 7, pulsePhase: Math.random() * Math.PI, color: '#00ffeb'
+                });
+            }
+
+            // Procedurally spawn red hazard decay spikes
+            if (Math.random() < 0.026) {
+                decaySpikes.push({
+                    x: Math.random() * canvas.width,
+                    y: -30,
+                    vx: (Math.random() - 0.5) * 3,
+                    vy: Math.random() * 3.0 + 2.0 + Math.min(sysState.tempoClock * 0.0003, 4),
+                    radius: 12, angleClock: Math.random() * Math.PI, color: '#ff0055'
+                });
+            }
+        }
+
+        // --- Master Game Render Animation Pipeline ---
+
+        function processSimulationFrame() {
+            if (!sysState.active) return;
+            requestAnimationFrame(processSimulationFrame);
+
+            updateSpawningEcosystemArrays();
+
+            // Handle screenshake translations displacement fields
+            let shakeX = 0, shakeY = 0;
+            if (sysState.shakeIntensity > 0) {
+                shakeX = (Math.random() - 0.5) * sysState.shakeIntensity;
+                shakeY = (Math.random() - 0.5) * sysState.shakeIntensity;
+                sysState.shakeIntensity *= 0.88; // Linear damping decay
+            }
+
+            ctx.save();
+            ctx.translate(shakeX, shakeY);
+
+            // Clear frame layer with smooth deep dark alpha fills
+            ctx.fillStyle = '#03030a';
+
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Render Passive Background Stardust Grid
+            for (let i = 0; i < visualBackgroundStars.length; i++) {
+                let star = visualBackgroundStars[i];
+                star.huePhase += 0.01;
+                // Move stars vertically to give a scrolling velocity effect
+                star.y += star.speedFactor * (1.0 + sysState.multiplier * 0.2);
+                if (star.y > canvas.height) star.y = -10;
+                
+                let dynamicAlpha = 0.3 + Math.sin(star.huePhase) * 0.2;
+                ctx.fillStyle = `rgba(255, 255, 255, ${dynamicAlpha})`;
+                ctx.fillRect(star.x, star.y, star.size, star.size);
+            }
+
+            // Calculate Elastic Motion Squash and Stretch Ratios for the core player orb
+            const travelDistanceX = cursor.targetX - cursor.x;
+            const travelDistanceY = cursor.targetY - cursor.y;
+            // Interpolate smooth tracking transitions physics parameters
+
+            cursor.x += travelDistanceX * 0.14;
+            cursor.y += travelDistanceY * 0.14;
+            
+            const realVelocityVectorSpeed = Math.hypot(travelDistanceX, travelDistanceY);
+            cursor.squash = 1.0 + Math.min(realVelocityVectorSpeed * 0.012, 0.5);
+
+            // 1. Process & Intercept Aqua Harmonic Spores Arrays
+            for (let i = ambientSpores.length - 1; i >= 0; i--) {
+                let spore = ambientSpores[i];
+                spore.pulsePhase += 0.06;
+                
+                // Fields gravity engine modifiers paths calculations
+                const vectorDistX = cursor.x - spore.x;
+                const vectorDistY = cursor.y - spore.y;
+                const absoluteDistance = Math.hypot(vectorDistX, vectorDistY);
+
+                if (absoluteDistance < 280) {
+                    // Pull spores inward if vortex field mode configuration is toggled
+                    if (sysState.fieldMode === 'vortex') {
+
+                        const pullForce = (280 - absoluteDistance) * 0.0006;
+                        spore.vx += (vectorDistX / absoluteDistance) * pullForce + (vectorDistY / absoluteDistance) * 0.15;
+                        spore.vy += (vectorDistY / absoluteDistance) * pullForce - (vectorDistX / absoluteDistance) * 0.15;
+                    } else {
+                        // Repel spores outward if linear field mode is active
+                        const pushForce = (280 - absoluteDistance) * 0.0009;
+                        spore.vx -= (vectorDistX / absoluteDistance) * pushForce;
+                        spore.vy -= (vectorDistY / absoluteDistance) * pushForce;
+                    }
+                }
+
+                spore.x += spore.vx;
+                spore.y += spore.vy;
+                spore.vx *= 0.97; // Drag factor friction calculations
+
+                // Draw glowing connector vector laser lines if spore fields enter proximity threshold
+                if (absoluteDistance < 160) {
+                    ctx.beginPath();
+                    ctx.strokeStyle = `rgba(0, 255, 235, ${0.4 * (1.0 - absoluteDistance / 160)})`;
+
+                    ctx.lineWidth = 1.5;
+                    ctx.moveTo(cursor.x, cursor.y);
+                    ctx.lineTo(spore.x, spore.y);
+                    ctx.stroke();
+                }
+
+                // Render dynamic pulsing flora seed graphics
+                let dynamicRadiusScale = spore.radius + Math.sin(spore.pulsePhase) * 2;
+                ctx.save();
+                ctx.shadowBlur = 12; ctx.shadowColor = spore.color;
+                ctx.fillStyle = spore.color;
+                ctx.beginPath(); ctx.arc(spore.x, spore.y, Math.max(1, dynamicRadiusScale), 0, Math.PI * 2); ctx.fill();
+                ctx.restore();
+
+                // Interception circle bounding box overlaps metric checks
+                if (absoluteDistance < cursor.radius + spore.radius) {
+                    const basePointsPayout = Math.round(20 * sysState.multiplier);
+                    sysState.score += basePointsPayout;
+                    sysState.multiplier += 0.1;
+
+                    
+                    if (webAudioCtx) triggerCollectionSporeChimeSynth(sysState.multiplier);
+                    igniteStardustExplosion(spore.x, spore.y, spore.color);
+                    createFloatingIndicatorNotifier(`+${basePointsPayout}`, spore.x, spore.y, '#00ffeb');
+                    
+                    ambientSpores.splice(i, 1);
+                    continue;
+                }
+
+                // Despawn bounds checks safety fallbacks
+                if (spore.y > canvas.height + 20 || spore.x < -20 || spore.x > canvas.width + 20) {
+                    ambientSpores.splice(i, 1);
+                }
+            }
+
+            // 2. Process & Intercept Dissonant Threat Spikes Arrays
+            for (let i = decaySpikes.length - 1; i >= 0; i--) {
+                let spike = decaySpikes[i];
+                spike.angleClock += 0.03;
+
+                spike.x += spike.vx;
+                spike.y += spike.vy;
+
+                // Simple boundaries reflect checks
+                if (spike.x < 10 || spike.x > canvas.width - 10) spike.vx *= -1;
+
+                // Render rotational angular hazard geometries spikes
+                ctx.save();
+                ctx.translate(spike.x, spike.y);
+                ctx.rotate(spike.angleClock);
+                ctx.shadowBlur = 14; ctx.shadowColor = spike.color;
+                ctx.fillStyle = spike.color;
+                
+                // Draw star geometry obstacle blocks
+                ctx.beginPath();
+                for (let j = 0; j < 4; j++) {
+                    ctx.lineTo(0, -spike.radius);
+                    ctx.rotate(Math.PI / 2);
+                }
+
+                ctx.closePath();
+                ctx.fill();
+                ctx.restore();
+
+                const deltaDistX = cursor.x - spike.x;
+                const deltaDistY = cursor.y - spike.y;
+                const linearDistance = Math.hypot(deltaDistX, deltaDistY);
+
+                // Crash interception metric check
+                if (linearDistance < cursor.radius + spike.radius) {
+                    sysState.hp = Math.max(0, sysState.hp - 25);
+                    sysState.multiplier = 1.0; // Reset combo multipliers chains string
+                    sysState.shakeIntensity = 22; // Inject hard full viewport layout camera shake
+                    
+                    if (webAudioCtx) triggerDissonantCrashSynth();
+                    igniteStardustExplosion(spike.x, spike.y, spike.color);
+                    createFloatingIndicatorNotifier("CRASH! -25% SHIELD", spike.x, spike.y, '#ff0055');
+                    
+                    decaySpikes.splice(i, 1);
+
+                    continue;
+                }
+
+                if (spike.y > canvas.height + 25) decaySpikes.splice(i, 1);
+            }
+
+            // 3. Process Burst Shard Splinter Particles
+            for (let i = particleSplinters.length - 1; i >= 0; i--) {
+                let p = particleSplinters[i];
+                p.x += p.vx; p.y += p.vy;
+                p.alpha -= 0.024;
+                if (p.alpha <= 0) {
+                    particleSplinters.splice(i, 1);
+                    continue;
+                }
+                ctx.save();
+                ctx.globalAlpha = p.alpha;
+                ctx.fillStyle = p.colorHex;
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2); ctx.fill();
+
+                ctx.restore();
+            }
+
+            // 4. Process Interface Pop Labels
+            for (let i = floatingNotifiers.length - 1; i >= 0; i--) {
+                let pop = floatingNotifiers[i];
+                pop.y += pop.velocityY;
+                pop.alpha -= 0.02;
+                if (pop.alpha <= 0) {
+                    floatingNotifiers.splice(i, 1);
+                    continue;
+                }
+                ctx.save();
+                ctx.globalAlpha = pop.alpha;
+                ctx.fillStyle = pop.color;
+                ctx.font = "bold 12px -apple-system, sans-serif";
+                ctx.fillText(pop.text, pop.x - 15, pop.y);
+                ctx.restore();
+            }
+
+
+            // 5. Render Core Vessel Organism Reticle
+            ctx.save();
+            ctx.translate(cursor.x, cursor.y);
+            // Apply squash and stretch transformation matrices profiles dynamically
+            const angleDirectionVector = Math.atan2(travelDistanceY, travelDistanceX);
+            if (realVelocityVectorSpeed > 2) {
+                ctx.rotate(angleDirectionVector);
+                ctx.scale(cursor.squash, 2.0 - cursor.squash);
+            }
+
+            ctx.shadowBlur = 24; ctx.shadowColor = '#00ffeb';
+            ctx.strokeStyle = '#00ffeb';
+            ctx.lineWidth = 3.5;
+            ctx.beginPath(); ctx.arc(0, 0, cursor.radius, 0, Math.PI * 2); ctx.stroke();
+            
+            // Draw core white engine spark
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath(); ctx.arc(0, 0, 5, 0, Math.PI * 2); ctx.fill();
+            ctx.restore();
+
+
+            ctx.restore(); // Terminate screen translation coordinates matrices offsets
+
+            // Refresh UI Text labels elements strings parameters
+            document.getElementById('txt-score').textContent = String(sysState.score).padStart(5, '0');
+            document.getElementById('txt-hp').textContent = `${sysState.hp}%`;
+            document.getElementById('txt-mult').textContent = `x${sysState.multiplier.toFixed(1)}`;
+
+            // Handle systematic loss metrics boundaries arrays parameters
+            if (sysState.hp <= 0) {
+                sysState.active = false;
+                terminateActiveAcousticLinks();
+                document.getElementById('overlay-gameover').classList.remove('hidden-structure');
+            }
+        }
+
+        // --- Isolated Operational Launcher UI Click Handlers Matrix ---
+        document.getElementById('btn-launch').addEventListener('click', function() {
+            setupEcosystemAudioEngine();
+            if (webAudioCtx && webAudioCtx.state === 'suspended') webAudioCtx.resume();
+
+            
+            // Fade out launcher plate completely to allow button capture passes clicks safely
+            document.getElementById('overlay-start').classList.add('hidden-structure');
+            sysState.active = true;
+            processSimulationFrame();
+        });
+
+        document.getElementById('btn-restart').addEventListener('click', function() {
+            sysState.score = 0;
+            sysState.hp = 100;
+            sysState.multiplier = 1.0;
+            sysState.tempoClock = 0;
+            ambientSpores = [];
+            decaySpikes = [];
+            particleSplinters = [];
+            floatingNotifiers = [];
+            
+            document.getElementById('overlay-gameover').classList.add('hidden-structure');
+            sysState.active = true;
+
+            processSimulationFrame();
+        });
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hyper-Soup: Cosmic Resonator Matrix</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #05050a;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+            color: #e0e0ff;
+        }
+        #canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            z-index: 1;
+        }
+        .ui-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            pointer-events: none;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+        }
+        .interactive {
+            pointer-events: auto;
+        }
+        .panel {
+            background: rgba(10, 10, 25, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 255, 200, 0.2);
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(0, 255, 200, 0.05);
+            transition: all 0.3s ease;
+        }
+        .panel:hover {
+            border-color: rgba(0, 255, 200, 0.4);
+
+            box-shadow: 0 8px 32px rgba(0, 255, 200, 0.1), 0 8px 32px rgba(0, 0, 0, 0.6);
+        }
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 100%;
+        }
+        .stats-box {
+            font-family: monospace;
+            font-size: 14px;
+            letter-spacing: 1px;
+            line-height: 1.5;
+            text-shadow: 0 0 8px rgba(0, 255, 255, 0.6);
+        }
+        .stat-val {
+            color: #00ffc8;
+            font-weight: bold;
+        }
+
+        .controls-panel {
+            max-width: 320px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        h2 {
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #00ffc8;
+            margin-bottom: 4px;
+            text-shadow: 0 0 10px rgba(0, 255, 200, 0.3);
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #8fa0c0;
+            display: flex;
+            justify-content: space-between;
+        }
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            background: #151530;
+            border-radius: 3px;
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+
+            height: 16px;
+            border-radius: 50%;
+            background: #00ffc8;
+            cursor: pointer;
+            box-shadow: 0 0 8px #00ffc8;
+            transition: transform 0.1s;
+        }
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            color: #e0e0ff;
+        }
+        .checkbox-container input {
+
+            display: none;
+        }
+        .custom-checkbox {
+            width: 16px;
+            height: 16px;
+            border: 1px solid #00ffc8;
+            border-radius: 4px;
+            display: inline-block;
+            position: relative;
+            background: #101025;
+        }
+        .checkbox-container input:checked + .custom-checkbox::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 5px;
+            width: 4px;
+            height: 8px;
+            border: solid #00ffc8;
+
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+        .btn {
+            background: #122535;
+            border: 1px solid #00ffc8;
+            color: #00ffc8;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+        .btn:hover {
+            background: #00ffc8;
+
+            color: #05050a;
+            box-shadow: 0 0 15px rgba(0, 255, 200, 0.4);
+        }
+        .btn.active {
+            background: rgba(0, 255, 200, 0.2);
+            box-shadow: inset 0 0 8px rgba(0, 255, 200, 0.4);
+        }
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+        .file-input-wrapper input[type=file] {
+            font-size: 100px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+
+            cursor: pointer;
+        }
+        .hidden {
+            display: none !important;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .row-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .game-over-banner {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(20, 5, 5, 0.9);
+            border: 2px solid #ff4d4d;
+
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            z-index: 50;
+            box-shadow: 0 0 40px rgba(255, 77, 77, 0.4);
+            pointer-events: auto;
+        }
+        .game-over-title {
+            font-size: 28px;
+            color: #ff4d4d;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-bottom: 12px;
+            text-shadow: 0 0 10px rgba(255, 77, 77, 0.5);
+        }
+    </style>
+</head>
+<body>
+
+
+    <canvas id="canvas"></canvas>
+
+    <!-- UI Overlay Layer -->
+    <div class="ui-layer">
+        <!-- Top HUD bar -->
+        <div class="top-bar">
+            <div class="panel stats-box interactive">
+                <div>SCORE: <span id="ui-score" class="stat-val">00000</span></div>
+                <div>MULTIPLIER: <span id="ui-combo" class="stat-val">x1.0</span></div>
+                <div>INTEGRITY: <span id="ui-health" class="stat-val">100%</span></div>
+            </div>
+            
+            <div class="panel stats-box interactive" style="text-align: right;">
+                <div>AUDIO SOURCE: <span id="ui-source-text" class="stat-val" style="color:#00bfff;">SYNTH PLAYGROUND</span></div>
+                <div>RESONANCE SCALE: <span id="ui-scale-text" class="stat-val">PENTATONIC AM</span></div>
+            </div>
+        </div>
+
+        <!-- Game Over Modal Window -->
+
+        <div id="game-over-modal" class="game-over-banner hidden">
+            <div class="game-over-title">Core Integrity Compromised</div>
+            <div class="stats-box" style="margin-bottom: 20px;">
+                FINAL SCORE: <span id="go-score" class="stat-val">0</span><br>
+                MAX COMBO: <span id="go-combo" class="stat-val">x1.0</span>
+            </div>
+            <button id="restart-btn" class="btn" style="width: 100%; padding: 12px;">Re-Materialize Core</button>
+        </div>
+
+        <!-- Bottom Dashboard Controls Panel -->
+        <div class="panel controls-panel interactive">
+            <h2>Matrix Controller</h2>
+            
+            <!-- Audio Inputs Configuration -->
+            <div class="control-group">
+                <label>Audio Node Stream</label>
+                <div class="row-grid">
+                    <button id="mic-toggle" class="btn">Link Mic</button>
+                    <div class="file-input-wrapper">
+
+                        <button class="btn" style="width:100%;">Upload Track</button>
+                        <input type="file" id="audio-upload" accept="audio/*">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gravity & Physics Modes -->
+            <div class="control-group">
+                <label id="lbl-gravity">Quantum Gravity: <span>1.5</span></label>
+                <input type="range" id="param-gravity" min="-3" max="5" step="0.1" value="1.5">
+            </div>
+
+            <div class="row-grid">
+                <button id="mode-vortex" class="btn active">Vortex Pull</button>
+                <button id="mode-linear" class="btn">Linear Traction</button>
+            </div>
+
+            <!-- Matrix Modifications -->
+            <div class="row-grid" style="align-items: center; padding: 4px 0;">
+
+                <label class="checkbox-container">
+                    <input type="checkbox" id="param-kaleidoscope">
+                    <span class="custom-checkbox"></span>
+                    4-Axis Mirror Matrix
+                </label>
+                <button id="scale-shifter" class="btn" style="font-size:10px; padding: 6px;">Shift Scale</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Background Audio Node -->
+    <audio id="bg-audio" crossorigin="anonymous" loop></audio>
+
+    <script>
+        // --- Core Application Scope State ---
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const audioEl = document.getElementById('bg-audio');
+
+
+        // Game Metrics & Loops
+        let gameState = {
+            score: 0,
+            combo: 1.0,
+            maxCombo: 1.0,
+            health: 100,
+            isActive: false,
+            scaleIndex: 0
+        };
+
+        const musicalScales = [
+            { name: "PENTATONIC AM", freqs: [220, 246.94, 293.66, 329.63, 392.00, 440, 493.88, 587.33] },
+            { name: "COSMIC AEOLIAN", freqs: [196.00, 220.00, 233.08, 261.63, 293.66, 311.13, 349.23, 392.00] },
+            { name: "CYBERPHUNK PHRYGIAN", freqs: [146.83, 155.56, 174.61, 196.00, 220.00, 233.08, 261.63, 293.66] },
+            { name: "NEO-DORIAN MATRIX", freqs: [207.65, 233.08, 246.94, 277.18, 311.13, 349.23, 369.99, 415.30] }
+        ];
+
+        // Interaction state
+        let pointer = { x: 0, y: 0, px: 0, py: 0, isDragging: false, active: false, speed: 0 };
+
+        let gridMesh = [];
+        let particles = [];
+        let enemies = [];
+        let explosions = [];
+        let textIndicators = [];
+
+        // Audio Pipelines
+        let audioCtx = null;
+        let analyser = null;
+        let audioDataArray = null;
+        let audioSourceNode = null;
+        let micStream = null;
+        let masterSynthGain = null;
+
+        // Configuration Parameters mappings
+        const config = {
+            gravityMultiplier: 1.5,
+            vortexMode: true,
+            kaleidoscope: false
+
+        };
+
+        // --- Window Lifecycle Boundaries & Adaptive Canvas Management ---
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            generateGridMesh();
+        }
+        window.addEventListener('resize', resizeCanvas);
+
+        function generateGridMesh() {
+            gridMesh = [];
+            const spacing = 40;
+            const cols = Math.ceil(canvas.width / spacing) + 1;
+            const rows = Math.ceil(canvas.height / spacing) + 1;
+
+            for (let c = 0; c < cols; c++) {
+                for (let r = 0; r < rows; r++) {
+                    gridMesh.push({
+
+                        baseX: c * spacing,
+                        baseY: r * spacing,
+                        x: c * spacing,
+                        y: r * spacing,
+                        vx: 0,
+                        vy: 0
+                    });
+                }
+            }
+        }
+
+        // --- Audio Pipeline Integrations ---
+        function initAudioPipeline() {
+            if (audioCtx) return;
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioCtx.createAnalyser();
+            analyser.fftSize = 256;
+            const bufferLength = analyser.frequencyBinCount;
+            audioDataArray = new Uint8Array(bufferLength);
+
+
+            // Synth Audio Node Linkages
+            masterSynthGain = audioCtx.createGain();
+            masterSynthGain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+            masterSynthGain.connect(analyser);
+            analyser.connect(audioCtx.destination);
+        }
+
+        function triggerSynthNote(speed) {
+            initAudioPipeline();
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            if (!audioCtx || !masterSynthGain) return;
+            
+            const currentScale = musicalScales[gameState.scaleIndex].freqs;
+            // Map speed matrix to specific frequency selection index
+            const noteIndex = Math.min(currentScale.length - 1, Math.floor((speed / 15) * currentScale.length));
+            const baseFreq = currentScale[noteIndex];
+
+
+            // FM Synthesis node allocation
+            const carrierOsc = audioCtx.createOscillator();
+            const modulatorOsc = audioCtx.createOscillator();
+            const modGain = audioCtx.createGain();
+            const envGain = audioCtx.createGain();
+
+            // Setup carrier wave parameters based on structural options
+            carrierOsc.type = speed > 8 ? 'sawtooth' : 'sine';
+            carrierOsc.frequency.setValueAtTime(baseFreq, audioCtx.currentTime);
+
+            // Setup modulation depth mapping to coordinate parameters
+            modulatorOsc.type = 'triangle';
+            modulatorOsc.frequency.setValueAtTime(baseFreq * 1.5, audioCtx.currentTime);
+            modGain.gain.setValueAtTime(speed * 12, audioCtx.currentTime);
+
+            // Envelope configuration
+            envGain.gain.setValueAtTime(0, audioCtx.currentTime);
+            envGain.gain.linearRampToValueAtTime(Math.min(0.4, speed * 0.04), audioCtx.currentTime + 0.02);
+            envGain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4 + (speed * 0.05));
+
+
+            // Wire Modulator -> Carrier modulation loop
+            modulatorOsc.connect(modGain);
+            modGain.connect(carrierOsc.frequency);
+
+            // Connect Carrier -> Main Node output
+            carrierOsc.connect(envGain);
+            envGain.connect(masterSynthGain);
+
+            // Initialize oscillators sequence execution
+            modulatorOsc.start();
+            carrierOsc.start();
+
+            modulatorOsc.stop(audioCtx.currentTime + 0.8);
+            carrierOsc.stop(audioCtx.currentTime + 0.8);
+        }
+
+        // Handle Audio Element uploads stream bindings securely
+        document.getElementById('audio-upload').addEventListener('change', function(e) {
+            initAudioPipeline();
+
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+
+            const file = e.target.files[0];
+            if (!file) return;
+
+            // Teardown pre-existing stream linkages safely
+            disconnectActiveAudioStreams();
+
+            const fileURL = URL.createObjectURL(file);
+            audioEl.src = fileURL;
+
+            audioSourceNode = audioCtx.createMediaElementSource(audioEl);
+            audioSourceNode.connect(analyser);
+            
+            audioEl.play().then(() => {
+                document.getElementById('ui-source-text').textContent = "TRACK METRICS STREAM";
+                document.getElementById('ui-source-text').style.color = "#00ffc8";
+            }).catch(err => console.log("Audio Playback Error Root:", err));
+        });
+
+
+        // Microphone pipeline processing link setup
+        document.getElementById('mic-toggle').addEventListener('click', function() {
+            initAudioPipeline();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+
+            const btn = this;
+            if (micStream) {
+                // Already running, let's toggle off and switch back to keyboard synth mode
+                disconnectActiveAudioStreams();
+                btn.classList.remove('active');
+                document.getElementById('ui-source-text').textContent = "SYNTH PLAYGROUND";
+                document.getElementById('ui-source-text').style.color = "#00bfff";
+                return;
+            }
+
+            navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+                .then(stream => {
+                    disconnectActiveAudioStreams();
+                    micStream = stream;
+
+                    audioSourceNode = audioCtx.createMediaStreamSource(stream);
+                    audioSourceNode.connect(analyser);
+
+                    btn.classList.add('active');
+                    document.getElementById('ui-source-text').textContent = "MICROPHONE DISPATCH";
+                    document.getElementById('ui-source-text').style.color = "#ffbfff";
+                })
+                .catch(err => {
+                    console.error("Microphone linkage failed:", err);
+                    btn.textContent = "Mic Denied";
+                });
+        });
+
+        function disconnectActiveAudioStreams() {
+            if (audioEl) audioEl.pause();
+            if (micStream) {
+                micStream.getTracks().forEach(track => track.stop());
+                micStream = null;
+            }
+
+            if (audioSourceNode) {
+                audioSourceNode.disconnect();
+                audioSourceNode = null;
+            }
+            document.getElementById('mic-toggle').classList.remove('active');
+        }
+
+        // --- Interaction Event Target Handling Interfaces ---
+        function getPointerCoords(e) {
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return {
+                x: clientX - rect.left,
+                y: clientY - rect.top
+            };
+        }
+
+        function pointerDown(e) {
+
+            if (!gameState.isActive) return;
+            pointer.active = true;
+            const coords = getPointerCoords(e);
+            pointer.x = coords.x;
+            pointer.y = coords.y;
+            pointer.px = coords.x;
+            pointer.py = coords.y;
+            
+            // Initial blast wave injection
+            createShockwave(pointer.x, pointer.y, 25, '#00ffc8');
+        }
+
+        function pointerMove(e) {
+            if (!gameState.isActive || !pointer.active) return;
+            const coords = getPointerCoords(e);
+            pointer.x = coords.x;
+            pointer.y = coords.y;
+
+            // Compute speed transient thresholds
+
+            const dx = pointer.x - pointer.px;
+            const dy = pointer.y - pointer.py;
+            pointer.speed = Math.sqrt(dx * dx + dy * dy);
+
+            if (pointer.speed > 1.5) {
+                triggerSynthNote(pointer.speed);
+                // Spawn tiny trail aesthetics particles matching synthesis profile
+                if (Math.random() < 0.4) {
+                    explosions.push({
+                        x: pointer.x,
+                        y: pointer.y,
+                        vx: (Math.random() - 0.5) * 4,
+                        vy: (Math.random() - 0.5) * 4,
+                        radius: Math.random() * 3 + 1,
+                        color: `rgba(0, 191, 255, ${Math.random() * 0.6 + 0.4})`,
+                        alpha: 1,
+                        decay: 0.02
+                    });
+                }
+
+            }
+
+            pointer.px = pointer.x;
+            pointer.py = pointer.y;
+        }
+
+        function pointerUp() {
+            pointer.active = false;
+            pointer.speed = 0;
+        }
+
+        canvas.addEventListener('mousedown', pointerDown);
+        canvas.addEventListener('mousemove', pointerMove);
+        window.addEventListener('mouseup', pointerUp);
+
+        canvas.addEventListener('touchstart', e => { pointerDown(e); e.preventDefault(); }, { passive: false });
+        canvas.addEventListener('touchmove', e => { pointerMove(e); e.preventDefault(); }, { passive: false });
+        window.addEventListener('touchend', pointerUp);
+
+
+        // --- Controls Panel Wireframes UI State Mappings ---
+        const sliderGravity = document.getElementById('param-gravity');
+        const lblGravity = document.getElementById('lbl-gravity');
+        sliderGravity.addEventListener('input', function() {
+            config.gravityMultiplier = parseFloat(this.value);
+            lblGravity.querySelector('span').textContent = config.gravityMultiplier.toFixed(1);
+        });
+
+        document.getElementById('mode-vortex').addEventListener('click', function() {
+            config.vortexMode = true;
+            this.classList.add('active');
+            document.getElementById('mode-linear').classList.remove('active');
+        });
+
+        document.getElementById('mode-linear').addEventListener('click', function() {
+            config.vortexMode = false;
+            this.classList.add('active');
+            document.getElementById('mode-vortex').classList.remove('active');
+        });
+
+
+        document.getElementById('param-kaleidoscope').addEventListener('change', function() {
+            config.kaleidoscope = this.checked;
+        });
+
+        document.getElementById('scale-shifter').addEventListener('click', function() {
+            gameState.scaleIndex = (gameState.scaleIndex + 1) % musicalScales.length;
+            document.getElementById('ui-scale-text').textContent = musicalScales[gameState.scaleIndex].name;
+            createShockwave(canvas.width / 2, canvas.height / 2, 40, '#00bfff');
+        });
+
+        // --- Entity System Generators ---
+        function spawnHarmonicParticle() {
+            if (particles.length >= 15) return;
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: Math.random() * 6 + 6,
+                pulseSpeed: Math.random() * 0.05 + 0.02,
+                angle: Math.random() * Math.PI * 2,
+
+                color: `hsl(${Math.random() * 60 + 140}, 100%, 65%)`,
+                value: 100
+            });
+        }
+
+        function spawnDiscordanceEnemy() {
+            if (enemies.length >= 8) return;
+            let x = Math.random() * canvas.width;
+            let y = Math.random() * canvas.height;
+            
+            if (pointer.active) {
+                while (Math.hypot(x - pointer.x, y - pointer.y) < 200) {
+                    x = Math.random() * canvas.width;
+                    y = Math.random() * canvas.height;
+                }
+            }
+
+            enemies.push({
+                x: x,
+
+                y: y,
+                radius: Math.random() * 8 + 12,
+                speed: Math.random() * 1.2 + 0.8,
+                color: `hsl(${Math.random() * 30}, 100%, 55%)`,
+                pulseAngle: 0
+            });
+        }
+
+        function createShockwave(x, y, radius, color) {
+            for (let i = 0; i < 24; i++) {
+                const angle = (i / 24) * Math.PI * 2;
+                const spd = Math.random() * 4 + 2;
+                explosions.push({
+                    x: x,
+                    y: y,
+                    vx: Math.cos(angle) * spd,
+                    vy: Math.sin(angle) * spd,
+                    radius: Math.random() * 4 + 2,
+                    color: color,
+
+                    alpha: 1,
+                    decay: Math.random() * 0.02 + 0.01
+                });
+            }
+        }
+
+        function triggerFloatingIndicator(text, x, y, color = '#00ffc8') {
+            textIndicators.push({
+                text: text,
+                x: x,
+                y: y - 10,
+                alpha: 1,
+                vy: -1.2,
+                color: color
+            });
+        }
+
+        // --- Core Simulation Engine Loop ---
+        function renderLoop() {
+
+            if (!gameState.isActive) return;
+            requestAnimationFrame(renderLoop);
+
+            let audioAvgIntensity = 0;
+            let audioLowRange = 0;
+            if (analyser && audioDataArray) {
+                analyser.getByteFrequencyData(audioDataArray);
+                let total = 0;
+                for (let i = 0; i < audioDataArray.length; i++) {
+                    total += audioDataArray[i];
+                    if (i < audioDataArray.length * 0.2) {
+                        audioLowRange += audioDataArray[i];
+                    }
+                }
+                audioAvgIntensity = total / audioDataArray.length;
+                audioLowRange = audioLowRange / (audioDataArray.length * 0.2);
+            }
+
+            const soundScaleFactor = 1 + (audioAvgIntensity / 128);
+
+            const bassKickPulse = audioLowRange / 255;
+
+            ctx.fillStyle = `rgba(5, 5, 10, ${0.25 + (bassKickPulse * 0.15)})`;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const targetX = pointer.active ? pointer.x : canvas.width / 2;
+            const targetY = pointer.active ? pointer.y : canvas.height / 2;
+
+            gridMesh.forEach(pt => {
+                const dx = targetX - pt.x;
+                const dy = targetY - pt.y;
+                const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+                
+                if (pointer.active && dist < 350) {
+                    const power = (350 - dist) / 350;
+                    const force = power * config.gravityMultiplier * 2.5;
+                    
+                    if (config.vortexMode) {
+                        pt.vx += (-dy / dist) * force;
+
+                        pt.vy += (dx / dist) * force;
+                    } else {
+                        pt.vx += (dx / dist) * force;
+                        pt.vy += (dy / dist) * force;
+                    }
+                }
+
+                pt.vx += (pt.baseX - pt.x) * 0.05;
+                pt.vy += (pt.baseY - pt.y) * 0.05;
+                
+                pt.vx *= 0.88;
+                pt.vy *= 0.88;
+                
+                pt.x += pt.vx;
+                pt.y += pt.vy;
+            });
+
+            ctx.strokeStyle = `rgba(0, 191, 255, ${0.08 + (bassKickPulse * 0.12)})`;
+            ctx.lineWidth = 1;
+
+            
+            const spacing = 40;
+            const cols = Math.ceil(canvas.width / spacing) + 1;
+            const rows = Math.ceil(canvas.height / spacing) + 1;
+
+            for (let c = 0; c < cols; c++) {
+                ctx.beginPath();
+                for (let r = 0; r < rows; r++) {
+                    const idx = c * rows + r;
+                    if (gridMesh[idx]) {
+                        if (r === 0) ctx.moveTo(gridMesh[idx].x, gridMesh[idx].y);
+                        else ctx.lineTo(gridMesh[idx].x, gridMesh[idx].y);
+                    }
+                }
+                ctx.stroke();
+            }
+
+            if (config.kaleidoscope) {
+                applySymmetricMirrorTransformations(soundScaleFactor, bassKickPulse, audioAvgIntensity);
+
+            } else {
+                renderEcosystemEntities(ctx, soundScaleFactor, bassKickPulse, audioAvgIntensity);
+            }
+
+            updateEcosystemLogic(soundScaleFactor, bassKickPulse);
+            
+            document.getElementById('ui-score').textContent = String(gameState.score).padStart(5, '0');
+            document.getElementById('ui-combo').textContent = `x${gameState.combo.toFixed(1)}`;
+            document.getElementById('ui-health').textContent = `${Math.ceil(gameState.health)}%`;
+
+            const uiHealthEl = document.getElementById('ui-health');
+            if (gameState.health < 35) {
+                uiHealthEl.style.color = '#ff4d4d';
+                uiHealthEl.style.textShadow = '0 0 12px #ff0000';
+            } else {
+                uiHealthEl.style.color = '#00ffc8';
+                uiHealthEl.style.textShadow = '0 0 8px rgba(0, 255, 255, 0.6)';
+            }
+        }
+
+
+        function applySymmetricMirrorTransformations(soundScaleFactor, bassKickPulse, audioAvgIntensity) {
+            const cx = canvas.width / 2;
+            const cy = canvas.height / 2;
+
+            for (let i = 0; i < 4; i++) {
+                ctx.save();
+                ctx.translate(cx, cy);
+                ctx.rotate((i * Math.PI) / 2);
+                
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(cx, -cy);
+                ctx.lineTo(cx, cy);
+                ctx.closePath();
+                ctx.clip();
+
+                ctx.translate(-cx, -cy);
+                renderEcosystemEntities(ctx, soundScaleFactor, bassKickPulse, audioAvgIntensity);
+                ctx.restore();
+
+            }
+        }
+
+        function renderEcosystemEntities(targetCtx, soundScale, bassPulse, audioAvg) {
+            particles.forEach(p => {
+                p.angle += p.pulseSpeed;
+                const dynamicRadius = p.radius * (1 + bassPulse * 0.3) + Math.sin(p.angle) * 2;
+                
+                targetCtx.save();
+                targetCtx.shadowBlur = 15;
+                targetCtx.shadowColor = p.color;
+                targetCtx.fillStyle = p.color;
+                targetCtx.beginPath();
+                targetCtx.arc(p.x, p.y, dynamicRadius, 0, Math.PI * 2);
+                targetCtx.fill();
+                
+                targetCtx.fillStyle = '#ffffff';
+                targetCtx.beginPath();
+                targetCtx.arc(p.x, p.y, dynamicRadius * 0.4, 0, Math.PI * 2);
+
+                targetCtx.fill();
+                targetCtx.restore();
+            });
+
+            if (pointer.active) {
+                const coreRadius = 24 * (1 + bassPulse * 0.25);
+                
+                targetCtx.save();
+                targetCtx.shadowBlur = 20;
+                targetCtx.shadowColor = '#00ffc8';
+                targetCtx.strokeStyle = '#00ffc8';
+                targetCtx.lineWidth = 3;
+                targetCtx.beginPath();
+                targetCtx.arc(pointer.x, pointer.y, coreRadius, 0, Math.PI * 2);
+                targetCtx.stroke();
+                
+                targetCtx.fillStyle = 'rgba(0, 255, 200, 0.2)';
+                targetCtx.fill();
+                targetCtx.restore();
+
+
+                if (audioDataArray) {
+                    targetCtx.beginPath();
+                    const ringPointsCount = audioDataArray.length;
+                    const scopeBaseRadius = coreRadius + 15;
+                    
+                    for (let i = 0; i < ringPointsCount; i++) {
+                        const angle = (i / ringPointsCount) * Math.PI * 2;
+                        const amplitudeShift = (audioDataArray[i] / 255) * 35;
+                        const finalRingRadius = scopeBaseRadius + amplitudeShift;
+                        
+                        const rx = pointer.x + Math.cos(angle) * finalRingRadius;
+                        const ry = pointer.y + Math.sin(angle) * finalRingRadius;
+                        
+                        if (i === 0) targetCtx.moveTo(rx, ry);
+                        else targetCtx.lineTo(rx, ry);
+                    }
+                    targetCtx.closePath();
+                    targetCtx.strokeStyle = 'rgba(0, 255, 200, 0.6)';
+                    targetCtx.lineWidth = 1.5;
+
+                    targetCtx.stroke();
+                }
+            }
+
+            enemies.forEach(e => {
+                e.pulseAngle += 0.08;
+                const reactiveEnemyRadius = e.radius * (1 + bassPulse * 0.4);
+                
+                targetCtx.save();
+                targetCtx.shadowBlur = 15;
+                targetCtx.shadowColor = '#ff3333';
+                targetCtx.fillStyle = e.color;
+                
+                targetCtx.beginPath();
+                const spikes = 8;
+                for (let i = 0; i < spikes; i++) {
+                    const angle = (i / spikes) * Math.PI * 2 + e.pulseAngle;
+                    const distMod = i % 2 === 0 ? 4 : -4;
+                    const sx = e.x + Math.cos(angle) * (reactiveEnemyRadius + distMod);
+
+                    const sy = e.y + Math.sin(angle) * (reactiveEnemyRadius + distMod);
+                    
+                    if (i === 0) targetCtx.moveTo(sx, sy);
+                    else targetCtx.lineTo(sx, sy);
+                }
+                targetCtx.closePath();
+                targetCtx.fill();
+                targetCtx.restore();
+            });
+
+            maxLen = explosions.length;
+            for (let i = 0; i < maxLen; i++) {
+                const x = explosions[i];
+                targetCtx.fillStyle = x.color;
+                targetCtx.globalAlpha = x.alpha;
+                targetCtx.beginPath();
+                targetCtx.arc(x.x, x.y, x.radius, 0, Math.PI * 2);
+                targetCtx.fill();
+            }
+
+            targetCtx.globalAlpha = 1.0;
+
+            textIndicators.forEach(t => {
+                targetCtx.save();
+                targetCtx.globalAlpha = t.alpha;
+                targetCtx.fillStyle = t.color;
+                targetCtx.font = 'bold 13px monospace';
+                targetCtx.shadowBlur = 4;
+                targetCtx.shadowColor = t.color;
+                targetCtx.fillText(t.text, t.x, t.y);
+                targetCtx.restore();
+            });
+            targetCtx.globalAlpha = 1.0;
+        }
+
+        // --- Game System Calculation Engine Mechanics ---
+        function updateEcosystemLogic(soundScale, bassPulse) {
+            if (Math.random() < 0.04) spawnHarmonicParticle();
+            if (Math.random() < 0.015) spawnDiscordanceEnemy();
+
+
+            for (let i = explosions.length - 1; i >= 0; i--) {
+                const x = explosions[i];
+                x.x += x.vx;
+                x.y += x.vy;
+                x.alpha -= x.decay;
+                if (x.alpha <= 0) explosions.splice(i, 1);
+            }
+
+            for (let i = textIndicators.length - 1; i >= 0; i--) {
+                const t = textIndicators[i];
+                t.y += t.vy;
+                t.alpha -= 0.02;
+                if (t.alpha <= 0) textIndicators.splice(i, 1);
+            }
+
+            if (pointer.active) {
+                enemies.forEach(e => {
+                    const dx = pointer.x - e.x;
+                    const dy = pointer.y - e.y;
+
+                    const dist = Math.hypot(dx, dy) || 1;
+                    
+                    const chaseSpeed = e.speed * (1 + bassPulse * 0.5);
+                    e.x += (dx / dist) * chaseSpeed;
+                    e.y += (dy / dist) * chaseSpeed;
+
+                    const coreRadius = 24 * (1 + bassPulse * 0.25);
+                    if (dist < (coreRadius + e.radius)) {
+                        gameState.health -= 0.6;
+                        gameState.combo = 1.0;
+                        
+                        if (Math.random() < 0.15) {
+                            explosions.push({
+                                x: e.x + (Math.random() - 0.5) * 20,
+                                y: e.y + (Math.random() - 0.5) * 20,
+                                vx: (Math.random() - 0.5) * 6,
+                                vy: (Math.random() - 0.5) * 6,
+                                radius: Math.random() * 4 + 2,
+                                color: '#ff3333',
+
+                                alpha: 1,
+                                decay: 0.04
+                            });
+                        }
+                    }
+                });
+            }
+
+            if (pointer.active) {
+                const coreRadius = 24 * (1 + bassPulse * 0.25);
+                for (let i = particles.length - 1; i >= 0; i--) {
+                    const p = particles[i];
+                    const dist = Math.hypot(pointer.x - p.x, pointer.y - p.y);
+
+                    if (dist < (coreRadius + p.radius + 10)) {
+                        const scoreGained = Math.round(p.value * gameState.combo);
+                        gameState.score += scoreGained;
+                        
+                        gameState.combo += 0.1;
+
+                        if (gameState.combo > gameState.maxCombo) gameState.maxCombo = gameState.combo;
+
+                        gameState.health = Math.min(100, gameState.health + 4);
+
+                        createShockwave(p.x, p.y, 15, p.color);
+                        triggerFloatingIndicator(`+${scoreGained} Resonator Echo`, p.x, p.y, p.color);
+                        
+                        particles.splice(i, 1);
+                    }
+                }
+            }
+
+            if (gameState.health <= 0) {
+                executeGameOverSequence();
+            }
+        }
+
+        function executeGameOverSequence() {
+            gameState.isActive = false;
+
+            disconnectActiveAudioStreams();
+
+            document.getElementById('go-score').textContent = gameState.score;
+            document.getElementById('go-combo').textContent = `x${gameState.maxCombo.toFixed(1)}`;
+            document.getElementById('game-over-modal').classList.remove('hidden');
+        }
+
+        function restartGame() {
+            gameState.score = 0;
+            gameState.combo = 1.0;
+            gameState.maxCombo = 1.0;
+            gameState.health = 100;
+            particles = [];
+            enemies = [];
+            explosions = [];
+            textIndicators = [];
+            
+            document.getElementById('game-over-modal').classList.add('hidden');
+            document.getElementById('ui-source-text').textContent = "SYNTH PLAYGROUND";
+
+            document.getElementById('ui-source-text').style.color = "#00bfff";
+            
+            gameState.isActive = true;
+            renderLoop();
+        }
+
+        // --- Immediate Auto-Boot Initialization Sequence ---
+        gameState.isActive = true;
+        resizeCanvas();
+        renderLoop();
+
+        document.getElementById('restart-btn').addEventListener('click', restartGame);
+    </script>
+</body>
+</html>
+

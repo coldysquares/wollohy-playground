@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmic Fluid Resonance Engine</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #020206;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
+
+            color: #e0e0ff;
+        }
+        #canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            z-index: 1;
+        }
+        .hud-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            pointer-events: none;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 24px;
+        }
+        .interactive {
+            pointer-events: auto;
+        }
+        .glass-panel {
+            background: rgba(8, 8, 20, 0.75);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(0, 255, 230, 0.2);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(0, 255, 230, 0.05);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .glass-panel:hover {
+
+            border-color: rgba(0, 255, 230, 0.4);
+            box-shadow: 0 20px 50px rgba(0, 255, 230, 0.1), 0 20px 50px rgba(0, 0, 0, 0.9);
+        }
+        .top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+        .score-box {
+            font-size: 15px;
+            letter-spacing: 2px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .highlight-neon {
+            color: #00ffeb;
+            text-shadow: 0 0 12px rgba(0, 255, 235, 0.6);
+        }
+
+        .bottom-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            width: 100%;
+            gap: 30px;
+        }
+        .control-box {
+            width: 320px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .guide-box {
+            width: 380px;
+            font-size: 12px;
+            line-height: 1.5;
+            color: #a2a2ca;
+            max-height: 300px;
+
+            overflow-y: auto;
+        }
+        h2 {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #00ffeb;
+            margin-bottom: 8px;
+            text-shadow: 0 0 10px rgba(0, 255, 235, 0.3);
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .input-group label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+
+            color: #6e6e96;
+            display: flex;
+            justify-content: space-between;
+        }
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 4px;
+            background: #0d0d1f;
+            border-radius: 2px;
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #00ffeb;
+            cursor: pointer;
+
+            box-shadow: 0 0 10px #00ffeb;
+            transition: transform 0.1s ease;
+        }
+        input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.25);
+        }
+        .grid-2x2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .ui-btn {
+            background: #040c16;
+            border: 1px solid #00ffeb;
+            color: #00ffeb;
+            padding: 10px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 11px;
+
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 1px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: center;
+        }
+        .ui-btn:hover {
+            background: #00ffeb;
+            color: #020206;
+            box-shadow: 0 0 20px rgba(0, 255, 235, 0.5);
+        }
+        .ui-btn.active {
+            background: rgba(0, 255, 235, 0.2);
+            box-shadow: inset 0 0 10px rgba(0, 255, 235, 0.3);
+        }
+        .file-upload-container {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+
+        }
+        .file-upload-container input[type=file] {
+            font-size: 100px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .toggle-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+        .toggle-wrap input {
+            display: none;
+        }
+
+        .toggle-box-ui {
+            width: 16px;
+            height: 16px;
+            border: 1px solid #00ffeb;
+            border-radius: 4px;
+            position: relative;
+            background: #04040c;
+        }
+        .toggle-wrap input:checked + .toggle-box-ui::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 5px;
+            width: 4px;
+            height: 7px;
+            border: solid #00ffeb;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        .game-card-modal {
+            position: absolute;
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(3, 3, 10, 0.95);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 2px solid #ff2b55;
+            border-radius: 16px;
+            padding: 30px;
+            width: 340px;
+            text-align: center;
+            z-index: 100;
+            box-shadow: 0 0 60px rgba(0, 0, 0, 0.95);
+        }
+        .game-card-modal.victory-card {
+            border-color: #00ffeb;
+            box-shadow: 0 0 60px rgba(0, 255, 235, 0.25);
+
+        }
+        .modal-title-text {
+            font-size: 22px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+            font-weight: bold;
+        }
+        .hidden {
+            display: none !important;
+        }
+        ul {
+            padding-left: 16px;
+            margin-top: 6px;
+        }
+        li {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+
+
+    <canvas id="canvas"></canvas>
+
+    <div class="hud-overlay">
+        <!-- Minimal, integrated ambient status bars -->
+        <div class="top-row">
+            <div class="glass-panel score-box interactive" style="display: flex; gap: 30px; padding: 10px 20px;">
+                <div>SCORE: <span id="txt-score" class="highlight-neon">00000</span></div>
+                <div>MULTIPLIER: <span id="txt-combo" class="highlight-neon" style="color: #ff00de; text-shadow: 0 0 12px rgba(255,0,222,0.6);">x1.0</span></div>
+            </div>
+            <div class="glass-panel score-box interactive" style="padding: 10px 20px;">
+                <div id="txt-chord-name" style="color: #ffcc00; text-shadow: 0 0 10px rgba(255,204,0,0.4);">NEBULA RESONANCE I</div>
+            </div>
+        </div>
+
+        <!-- Dynamic Game End Condition Modals -->
+        <div id="modal-gameover" class="game-card-modal hidden">
+            <div class="modal-title-text" style="color: #ff2b55;">Resonance Dissolved</div>
+            <p style="font-size: 13px; margin-bottom: 20px; color: #8e8eb4;">Your vessel energy flatlined. The fluid matrix collapsed into noise entropy.</p>
+            <button id="btn-reset-go" class="ui-btn interactive" style="width: 100%; border-color: #ff2b55; color: #ff2b55;">Re-Tune Resonance</button>
+
+        </div>
+
+        <div id="modal-victory" class="game-card-modal victory-card hidden">
+            <div class="modal-title-text" style="color: #00ffeb;">Matrix Synchronized</div>
+            <p style="font-size: 13px; margin-bottom: 20px; color: #8e8eb4;">Quantum acoustic alignment reached 10,000 score milestones successfully!</p>
+            <div class="grid-2x2">
+                <button id="btn-endless" class="ui-btn interactive" style="border-color: #ff00de; color: #ff00de;">Endless Overdrive</button>
+                <button id="btn-reset-vic" class="ui-btn interactive">Re-Initialize</button>
+            </div>
+        </div>
+
+        <!-- Real-Time Workspace Floor Controls Console -->
+        <div class="bottom-row">
+            <div class="glass-panel control-box interactive">
+                <h2>Fluid Resonance Matrix</h2>
+                <div id="lbl-source-type" style="font-size:10px;color:#6e6e96;letter-spacing:1px;">RHYTHM METRONOME ENGINE</div>
+                
+                <div class="input-group">
+                    <label>Acoustic Routing</label>
+                    <div class="grid-2x2">
+
+                        <button id="btn-mic" class="ui-btn">Link Mic</button>
+                        <div class="file-upload-container">
+                            <button class="ui-btn" style="width: 100%;">Upload Track</button>
+                            <input type="file" id="file-audio" accept="audio/*">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label id="lbl-fluid">Fluid Viscosity/Vortex: <span>2.2</span></label>
+                    <input type="range" id="slider-fluid" min="0.5" max="5.0" step="0.1" value="2.2">
+                </div>
+
+                <div class="grid-2x2">
+                    <button id="btn-mode-vortex" class="ui-btn active">Fluid Vortex</button>
+                    <button id="btn-mode-blast" class="ui-btn">Fluid Wave</button>
+                </div>
+
+                <div class="grid-2x2" style="align-items: center; padding-top: 2px;">
+
+                    <label class="toggle-wrap">
+                        <input type="checkbox" id="check-mirror">
+                        <span class="toggle-box-ui"></span>
+                        4-Axis Mirror
+                    </label>
+                    <button id="btn-nova" class="ui-btn" style="border-color: #ff00de; color: #ff00de; padding: 6px; font-size: 10px;">Sonic Nova</button>
+                </div>
+            </div>
+
+            <!-- Modern Synthesized Mechanical Manual Guides -->
+            <div class="glass-panel guide-box interactive">
+                <h2>High-Juice Synesthesia Manifest</h2>
+                <p style="margin-bottom: 6px; color: #d0d0ff;">Gameplay and high-fidelity sound synthesis loops are completely unified inside a fluid simulation ecosystem:</p>
+                <ul>
+                    <li><strong>Fluid Vector Canvas:</strong> Swiping or clicking coordinates generates vibrant glowing fluid streams. Motion vectors dynamically route arpeggiated synthesis chords across musical networks.</li>
+                    <li><strong>Vessel Core Hub HUD:</strong> Your score, multipliers, **Integrity Ring (Inner green line)**, and **Nova Energy (Outer pink line)** track dynamically attached directly to your cursor focal point.</li>
+                    <li><span style="color: #00ffeb; font-weight: bold;">Star Seeds (Green):</span> Materialize on crisp treble musical peaks. Draw them into your orbit to trigger beautiful, lush **FM Synthesis Chime Bell notes**.</li>
+                    <li><span style="color: #ff2b55; font-weight: bold;">Dissonant Nodes (Red Triangles):</span> Explode on deep low-frequency bass thuds. Avoid pulling them close—they draw red vector warnings and sap core energy.</li>
+                    <li><strong>Sonic Nova [Spacebar]:</strong> When your outer pink meter hits 100%, trigger a cosmic nova wave that cleanses dissonance blocks and shatters them into score crystals!</li>
+
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <audio id="audio-device" crossorigin="anonymous" loop></audio>
+
+    <script>
+        // --- Core Application Structural Scope Systems ---
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const audioNodeEl = document.getElementById('audio-device');
+
+        let coreState = {
+            score: 0,
+            combo: 1.0,
+            health: 100,
+            novaCharge: 0,
+            active: true,
+
+            victory: false,
+            endless: false,
+            shake: 0,
+            chordPackIndex: 0,
+            flashAlpha: 0,
+            flashHex: '#ffffff',
+            hitStopFrames: 0
+        };
+
+        // Rich Sound Canvas Scale Framework arrays (Guarantees beautiful harmonized chord progressions)
+        const chordProgressions = [
+            { name: "CYBER ELIXIR PENTATONIC", notes: [146.83, 164.81, 196.00, 220.00, 293.66, 329.63, 392.00, 440.00, 587.33, 659.25, 783.99, 880.00] },
+            { name: "AMETHYST NEBULA MINOR", notes: [130.81, 155.56, 174.61, 196.00, 220.00, 261.63, 311.13, 349.23, 392.00, 440.00, 523.25, 622.25] },
+            { name: "SOLAR FLARE LYDIAN", notes: [138.59, 155.56, 174.61, 207.65, 233.08, 277.18, 311.13, 349.23, 415.30, 466.16, 554.37, 622.25] }
+        ];
+
+        let pointer = { x: 0, y: 0, px: 0, py: 0, active: false, speed: 0, angle: 0 };
+        let vectorFieldGrid = [];
+        let highJuiceParticles = []; // 1200+ particle high capacity fluid engine
+
+        let starSeeds = [];
+        let dissonanceHazards = [];
+        let canvasPopTexts = [];
+        let spectralCascadeRows = [];
+
+        // Web Audio Core Nodes Context Layouts
+        let audioCtxNode = null;
+        let analyserNode = null;
+        let freqDataArray = null;
+        let timeDataArray = null;
+        let activeSrcNode = null;
+        let micStreamObj = null;
+        
+        let masterBiquadFilter = null;
+        let structuralDelayNode = null;
+        let delayGainNode = null;
+        let finalLimiterCompressor = null;
+        let arpeggiatorTimerClock = null;
+
+
+        const options = {
+            fluidViscosity: 2.2,
+            vortex: true,
+            mirror: false
+        };
+
+        // --- Window Layout Viewport Calibration Setup ---
+        function resizeEngineCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            reconstructVectorField();
+            initializeHighDensityFluidParticles();
+        }
+        window.addEventListener('resize', resizeEngineCanvas);
+
+        function reconstructVectorField() {
+            vectorFieldGrid = [];
+            const spacing = 50;
+            const cols = Math.ceil(canvas.width / spacing) + 1;
+
+            const rows = Math.ceil(canvas.height / spacing) + 1;
+
+            for (let c = 0; c < cols; c++) {
+                vectorFieldGrid[c] = [];
+                for (let r = 0; r < rows; r++) {
+                    vectorFieldGrid[c][r] = {
+                        x: c * spacing, y: r * spacing,
+                        vx: 0, vy: 0
+                    };
+                }
+            }
+        }
+
+        function initializeHighDensityFluidParticles() {
+            highJuiceParticles = [];
+            const count = Math.min(1300, (canvas.width * canvas.height) / 1200);
+            for (let i = 0; i < count; i++) {
+                highJuiceParticles.push({
+                    x: Math.random() * canvas.width,
+
+                    y: Math.random() * canvas.height,
+                    vx: (Math.random() - 0.5) * 2,
+                    vy: (Math.random() - 0.5) * 2,
+                    size: Math.random() * 2 + 1,
+                    hue: Math.random() * 60 + 170,
+                    alpha: Math.random() * 0.5 + 0.3
+                });
+            }
+        }
+
+        // --- Professional High-Fidelity FM Audio Synthesis Engine ---
+        function initializeHighFidelityAudioContext() {
+            if (audioCtxNode) return;
+            audioCtxNode = new (window.AudioContext || window.webkitAudioContext)();
+            
+            analyserNode = audioCtxNode.createAnalyser();
+            analyserNode.fftSize = 256;
+            freqDataArray = new Uint8Array(analyserNode.frequencyBinCount);
+            timeDataArray = new Uint8Array(analyserNode.frequencyBinCount);
+
+
+            masterBiquadFilter = audioCtxNode.createBiquadFilter();
+            masterBiquadFilter.type = 'lowpass';
+            masterBiquadFilter.frequency.setValueAtTime(1300, audioCtxNode.currentTime);
+            masterBiquadFilter.Q.setValueAtTime(1.0, audioCtxNode.currentTime);
+
+            structuralDelayNode = audioCtxNode.createDelay(1.0);
+            structuralDelayNode.delayTime.setValueAtTime(0.36, audioCtxNode.currentTime);
+
+            delayGainNode = audioCtxNode.createGain();
+            delayGainNode.gain.setValueAtTime(0.45, audioCtxNode.currentTime);
+
+            structuralDelayNode.connect(delayGainNode);
+            delayGainNode.connect(structuralDelayNode);
+
+            finalLimiterCompressor = audioCtxNode.createDynamicsCompressor();
+            finalLimiterCompressor.threshold.setValueAtTime(-10, audioCtxNode.currentTime);
+            finalLimiterCompressor.knee.setValueAtTime(15, audioCtxNode.currentTime);
+            finalLimiterCompressor.ratio.setValueAtTime(6, audioCtxNode.currentTime);
+
+
+            masterBiquadFilter.connect(structuralDelayNode);
+            masterBiquadFilter.connect(finalLimiterCompressor);
+            structuralDelayNode.connect(finalLimiterCompressor);
+            
+            finalLimiterCompressor.connect(analyserNode);
+            analyserNode.connect(audioCtxNode.destination);
+
+            startAlgorithmicArpeggiatorLoop();
+            startChordModulationRoutine();
+        }
+
+        function startAlgorithmicArpeggiatorLoop() {
+            arpeggiatorTimerClock = setInterval(() => {
+                if (!coreState.active) return;
+                const activeScale = chordProgressions[coreState.chordPackIndex].notes;
+                
+                let noteSelectionFreq = activeScale[Math.floor(Math.random() * 3)];
+                if (pointer.active) {
+                    const normalizedPointerSpeed = Math.min(pointer.speed / 18, 1);
+
+                    const bucketIndex = Math.floor(normalizedPointerSpeed * (activeScale.length - 1));
+                    noteSelectionFreq = activeScale[bucketIndex];
+                }
+                
+                // Trigger smooth algorithmic FM chime tones for high quality soundscapes
+                playFMBellTone(noteSelectionFreq, 0.05, 0.7);
+                
+                // Periodically anchor deep low frequency background ambient sub-drones
+                if (Math.random() < 0.2) {
+                    playFMBellTone(activeScale[0] * 0.5, 0.1, 1.3, 0.5); // Rich deep sub bass carrier
+                }
+            }, 240);
+        }
+
+        function startChordModulationRoutine() {
+            setInterval(() => {
+                if (!coreState.active) return;
+                coreState.chordPackIndex = (coreState.chordPackIndex + 1) % chordProgressions.length;
+                document.getElementById('txt-chord-name').textContent = chordProgressions[coreState.chordPackIndex].name;
+
+                coreState.flashAlpha = 0.15;
+                coreState.flashHex = 'rgba(0, 255, 235, 0.15)';
+            }, 11000);
+        }
+
+        // FM Synthesis Tone Engine: Combines a Carrier Node and a Modulator Node to synthesize crisp crystal bells instead of basic flat waves
+        function playFMBellTone(frequency, volume, decay, modulatorRatio = 2.0) {
+            if (!audioCtxNode) return;
+            const now = audioCtxNode.currentTime;
+
+            const carrierOsc = audioCtxNode.createOscillator();
+            const modulatorOsc = audioCtxNode.createOscillator();
+            const modulatorGain = audioCtxNode.createGain();
+            const mainEnvelopeGain = audioCtxNode.createGain();
+
+            carrierOsc.type = 'sine';
+            carrierOsc.frequency.setValueAtTime(frequency, now);
+
+            modulatorOsc.type = 'sine';
+
+            modulatorOsc.frequency.setValueAtTime(frequency * modulatorRatio, now);
+
+            modulatorGain.gain.setValueAtTime(frequency * 1.2, now);
+            modulatorGain.gain.exponentialRampToValueAtTime(0.01, now + decay);
+
+            mainEnvelopeGain.gain.setValueAtTime(0, now);
+            mainEnvelopeGain.gain.linearRampToValueAtTime(volume, now + 0.03); // Strict attack ramping to avoid audio popping
+            mainEnvelopeGain.gain.exponentialRampToValueAtTime(0.0001, now + decay);
+
+            modulatorOsc.connect(modulatorGain);
+            modulatorGain.connect(carrierOsc.frequency); // FM modulation routing step
+            
+            carrierOsc.connect(mainEnvelopeGain);
+            mainEnvelopeGain.connect(masterBiquadFilter);
+
+            modulatorOsc.start(now);
+            carrierOsc.start(now);
+            modulatorOsc.stop(now + decay);
+            carrierOsc.stop(now + decay);
+
+        }
+
+        // --- Juiced Audio Node Action Triggers ---
+        function playChimeHarvestAudioFX() {
+            if (!audioCtxNode) return;
+            const scale = chordProgressions[coreState.chordPackIndex].notes;
+            const targetNote = scale[Math.min(scale.length - 1, 5 + Math.floor(coreState.combo * 0.4))];
+            playFMBellTone(targetNote * 1.5, 0.15, 0.35, 3.0); // Clean crystalline extraction strike
+        }
+
+        function playDissonantImpactAudioFX() {
+            if (!audioCtxNode) return;
+            const oscNode = audioCtxNode.createOscillator();
+            const gainNode = audioCtxNode.createGain();
+            oscNode.type = 'sawtooth';
+            oscNode.frequency.setValueAtTime(110, audioCtxNode.currentTime);
+            oscNode.frequency.linearRampToValueAtTime(30, audioCtxNode.currentTime + 0.16);
+
+            gainNode.gain.setValueAtTime(0.24, audioCtxNode.currentTime);
+
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtxNode.currentTime + 0.16);
+
+            oscNode.connect(gainNode);
+            gainNode.connect(finalLimiterCompressor);
+            oscNode.start();
+            oscNode.stop(audioCtxNode.currentTime + 0.16);
+        }
+
+        function playNovaDetonationAudioFX() {
+            if (!audioCtxNode) return;
+            const now = audioCtxNode.currentTime;
+            const osc = audioCtxNode.createOscillator();
+            const gain = audioCtxNode.createGain();
+            const biquad = audioCtxNode.createBiquadFilter();
+
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(180, now);
+            osc.frequency.exponentialRampToValueAtTime(10, now + 0.7);
+
+
+            biquad.type = 'lowpass';
+            biquad.frequency.setValueAtTime(300, now);
+
+            gain.gain.setValueAtTime(0.65, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.7);
+
+            osc.connect(biquad);
+            biquad.connect(gain);
+            gain.connect(audioCtxNode.destination);
+            osc.start(now);
+            osc.stop(now + 0.7);
+        }
+
+        // --- Media Input File Streaming Bindings ---
+        document.getElementById('file-audio').addEventListener('change', function(e) {
+            initializeHighFidelityAudioContext();
+            if (audioCtxNode.state === 'suspended') audioCtxNode.resume();
+            
+            const file = e.target.files[0];
+
+            if (!file) return;
+
+            clearActiveHardwareStreams();
+            const url = URL.createObjectURL(file);
+            audioNodeEl.src = url;
+
+            activeSrcNode = audioCtxNode.createMediaElementSource(audioNodeEl);
+            activeSrcNode.connect(analyserNode);
+            audioNodeEl.play().then(() => {
+                document.getElementById('lbl-source-type').textContent = "MEDIA STREAMING LINKED";
+            }).catch(err => console.log(err));
+        });
+
+        document.getElementById('btn-mic').addEventListener('click', function() {
+            initializeHighFidelityAudioContext();
+            if (audioCtxNode.state === 'suspended') audioCtxNode.resume();
+
+            if (micStreamObj) {
+                clearActiveHardwareStreams();
+
+                this.classList.remove('active');
+                document.getElementById('lbl-source-type').textContent = "RHYTHM METRONOME ENGINE";
+                return;
+            }
+
+            navigator.mediaDevices.getUserMedia({ audio: true, video: false })
+                .then(stream => {
+                    clearActiveHardwareStreams();
+                    micStreamObj = stream;
+                    activeSrcNode = audioCtxNode.createMediaStreamSource(stream);
+                    activeSrcNode.connect(analyserNode);
+                    this.classList.add('active');
+                    document.getElementById('lbl-source-type').textContent = "HARDWARE MIC DIRECT";
+                })
+                .catch(err => console.warn(err));
+        });
+
+        function clearActiveHardwareStreams() {
+            if (audioNodeEl) audioNodeEl.pause();
+
+            if (micStreamObj) {
+                micStreamObj.getTracks().forEach(t => t.stop());
+                micStreamObj = null;
+            }
+            if (activeSrcNode) {
+                activeSrcNode.disconnect();
+                activeSrcNode = null;
+            }
+            document.getElementById('btn-mic').classList.remove('active');
+        }
+
+        // --- Interaction Coordination Matrices ---
+        function parseCanvasInputCoordinates(e) {
+            const boundingBox = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            pointer.x = clientX - boundingBox.left;
+            pointer.y = clientY - boundingBox.top;
+        }
+
+
+        window.addEventListener('mousedown', (e) => {
+            if (!coreState.active) return;
+            initializeHighFidelityAudioContext();
+            if (audioCtxNode && audioCtxNode.state === 'suspended') audioCtxNode.resume();
+            pointer.active = true;
+            parseCanvasInputCoordinates(e);
+            pointer.px = pointer.x; pointer.py = pointer.y;
+            spawnDebrisExplosionParticles(pointer.x, pointer.y, 8, '#00ffeb');
+        });
+        window.addEventListener('mousemove', (e) => {
+            if (!pointer.active) return;
+            parseCanvasInputCoordinates(e);
+            const deltaX = pointer.x - pointer.px; const deltaY = pointer.y - pointer.py;
+            pointer.speed = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+            if (pointer.speed > 0.5) pointer.angle = Math.atan2(deltaY, deltaX);
+            pointer.px = pointer.x; pointer.py = pointer.y;
+        });
+        window.addEventListener('mouseup', () => { pointer.active = false; pointer.speed = 0; });
+
+
+        window.addEventListener('touchstart', (e) => {
+            if (!coreState.active) return;
+            initializeHighFidelityAudioContext();
+            pointer.active = true;
+            parseCanvasInputCoordinates(e);
+            pointer.px = pointer.x; pointer.py = pointer.y;
+        }, { passive: true });
+        window.addEventListener('touchmove', (e) => {
+            if (!pointer.active) return;
+            parseCanvasInputCoordinates(e);
+            const deltaX = pointer.x - pointer.px; const deltaY = pointer.y - pointer.py;
+            pointer.speed = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+            if (pointer.speed > 0.5) pointer.angle = Math.atan2(deltaY, deltaX);
+            pointer.px = pointer.x; pointer.py = pointer.y;
+        }, { passive: true });
+        window.addEventListener('touchend', () => { pointer.active = false; pointer.speed = 0; });
+
+        // --- Console Element Binding Interconnections ---
+        const sliderFluid = document.getElementById('slider-fluid');
+
+        const lblFluid = document.getElementById('lbl-fluid').querySelector('span');
+        sliderFluid.addEventListener('input', function() {
+            options.fluidViscosity = parseFloat(this.value);
+            lblFluid.textContent = options.fluidViscosity.toFixed(1);
+        });
+
+        document.getElementById('btn-mode-vortex').addEventListener('click', function() {
+            options.vortex = true; this.classList.add('active');
+            document.getElementById('btn-mode-blast').classList.remove('active');
+        });
+        document.getElementById('btn-mode-blast').addEventListener('click', function() {
+            options.vortex = false; this.classList.add('active');
+            document.getElementById('btn-mode-vortex').classList.remove('active');
+        });
+        document.getElementById('check-mirror').addEventListener('change', function() {
+            options.mirror = this.checked;
+        });
+        
+        function handleSonicNovaCall() {
+
+            if (coreState.novaCharge < 100 || !coreState.active) return;
+            coreState.novaCharge = 0;
+            coreState.shake = 36;
+            coreState.hitStopFrames = 5; // Hit stop frame delay for heavy tactile feel
+            coreState.flashAlpha = 0.5;
+            coreState.flashHex = 'rgba(255, 0, 222, 0.45)';
+            playNovaDetonationAudioFX();
+            
+            dissonanceHazards.forEach(h => {
+                spawnDebrisExplosionParticles(h.x, h.y, 14, '#ff2b55');
+                coreState.score += Math.round(200 * coreState.combo);
+            });
+            dissonanceHazards = [];
+            triggerFloatingTextOverlay("SONIC NOVA CLEANSE MATRIX!", canvas.width / 2, canvas.height / 2 - 40, '#ff00de');
+        }
+        document.getElementById('btn-nova').addEventListener('click', handleSonicNovaCall);
+        window.addEventListener('keydown', (e) => { if (e.code === 'Space') handleSonicNovaCall(); });
+
+        // --- Spatial Elements Entities Factory ---
+
+        function spawnTrebleStarSeed(x, y, amp) {
+            starSeeds.push({
+                x: x || Math.random() * canvas.width,
+                y: y || Math.random() * canvas.height,
+                radius: 7 + (amp * 7),
+                rotAngle: Math.random() * Math.PI * 2,
+                rotSpeed: Math.random() * 0.06 + 0.04,
+                color: `hsl(${Math.random() * 30 + 140}, 100%, 65%)`,
+                baseScore: 100
+            });
+        }
+
+        function spawnBassDissonanceNode(x, y, amp) {
+            dissonanceHazards.push({
+                x: x || Math.random() * canvas.width,
+                y: y || Math.random() * canvas.height,
+                radius: 12 + (amp * 10),
+                pulsePhase: Math.random() * Math.PI,
+                color: `hsl(${Math.random() * 10}, 100%, 55%)`,
+
+                chaseVelocity: Math.random() * 0.4 + 0.7
+            });
+        }
+
+        function spawnDebrisExplosionParticles(x, y, count, colorHex) {
+            for (let i = 0; i < count; i++) {
+                const angle = (i / count) * Math.PI * 2 + Math.random();
+                const velocity = Math.random() * 4.0 + 1.5;
+                velocityParticles.push({
+                    x: x, y: y,
+                    vx: Math.cos(angle) * velocity, vy: Math.sin(angle) * velocity,
+                    radius: Math.random() * 3 + 1,
+                    color: colorHex, alpha: 1,
+                    decay: Math.random() * 0.022 + 0.012
+                });
+            }
+        }
+
+        function triggerFloatingTextOverlay(text, x, y, hex = '#00ffeb') {
+
+            canvasPopTexts.push({ text: text, x: x, y: y - 10, alpha: 1, vy: -1.4, color: hex });
+        }
+
+        // --- Primary High-Performance Render & Simulation Pipelines ---
+        function executeSimulationLoop() {
+            if (!coreState.active) return;
+            requestAnimationFrame(executeSimulationLoop);
+
+            // Hit stop frame stabilization freeze framework logic
+            if (coreState.hitStopFrames > 0) {
+                coreState.hitStopFrames--;
+                return;
+            }
+
+            // 1. Gather Real-Time FFT Fast Fourier Transform Audio Transients
+            let bassFreqAvg = 0, trebleFreqAvg = 0, masterVolAvg = 0;
+
+            if (analyserNode && freqDataArray && timeDataArray) {
+                analyserNode.getByteFrequencyData(freqDataArray);
+
+                analyserNode.getByteTimeDomainData(timeDataArray);
+
+                let totalSum = 0, bassSum = 0, trebleSum = 0;
+                const len = freqDataArray.length;
+
+                for (let i = 0; i < len; i++) {
+                    totalSum += freqDataArray[i];
+                    if (i < len * 0.22) bassSum += freqDataArray[i];
+                    if (i > len * 0.65) trebleSum += freqDataArray[i];
+                }
+
+                masterVolAvg = totalSum / len;
+                bassFreqAvg = bassSum / (len * 0.22);
+                trebleFreqAvg = trebleSum / (len * 0.35);
+
+                spectralCascadeRows.push(new Uint8Array(freqDataArray));
+                if (spectralCascadeRows.length > 35) spectralCascadeRows.shift();
+            }
+
+
+            const masterPulseVal = masterVolAvg / 255;
+            const bassRatio = bassFreqAvg / 255;
+            const trebleRatio = trebleFreqAvg / 255;
+
+            // Audio-coupled item spawning multipliers
+            if (analyserNode) {
+                if (trebleRatio > 0.42 && Math.random() < 0.08) {
+                    spawnTrebleStarSeed(Math.random() * canvas.width, Math.random() * canvas.height, trebleRatio);
+                }
+                if (bassRatio > 0.62 && Math.random() < 0.04) {
+                    spawnBassDissonanceNode(Math.random() * canvas.width, Math.random() * canvas.height, bassRatio);
+                }
+            } else {
+                if (Math.random() < 0.035) spawnTrebleStarSeed();
+                if (Math.random() < 0.012) spawnBassDissonanceNode();
+            }
+
+            // Real-time structural camera screenshake translations
+            let shakeX = 0, shakeY = 0;
+
+            if (coreState.shake > 0) {
+                shakeX = (Math.random() - 0.5) * coreState.shake;
+                shakeY = (Math.random() - 0.5) * coreState.shake;
+                coreState.shake *= 0.86;
+                if (coreState.shake < 0.2) coreState.shake = 0;
+            }
+
+            ctx.save();
+            ctx.translate(shakeX, shakeY);
+
+            // Draw fluid trailing alpha fade buffer sheets
+            ctx.fillStyle = `rgba(2, 2, 6, ${0.16 + (bassRatio * 0.12)})`;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            if (coreState.flashAlpha > 0) {
+                ctx.fillStyle = coreState.flashHex;
+                ctx.globalAlpha = coreState.flashAlpha;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.globalAlpha = 1.0;
+
+                coreState.flashAlpha -= 0.04;
+            }
+
+            // 2. Compute Fluid Velocity Network Fields
+            const focalPointX = pointer.active ? pointer.x : canvas.width / 2;
+            const focalPointY = pointer.active ? pointer.y : canvas.height / 2;
+            
+            const spacing = 50;
+            const cols = vectorFieldGrid.length;
+            const rows = vectorFieldGrid[0].length;
+
+            for (let c = 0; c < cols; c++) {
+                for (let r = 0; r < rows; r++) {
+                    const node = vectorFieldGrid[c][r];
+                    const dx = focalPointX - node.x; const dy = focalPointY - node.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+
+                    if (pointer.active && dist < 300) {
+                        const strength = (300 - dist) / 300;
+
+                        const pullForce = strength * options.fluidViscosity * 3.5;
+                        if (options.vortex) {
+                            node.vx += (-dy / dist) * pullForce; node.vy += (dx / dist) * pullForce;
+                        } else {
+                            node.vx += (dx / dist) * pullForce; node.vy += (dy / dist) * pullForce;
+                        }
+                    }
+
+                    // Explode fluid lattices out based on sound volume baseline shifts
+                    if (analyserNode && dist < 400) {
+                        const pushStrength = (400 - dist) / 400;
+                        node.vx -= (dx / dist) * pushStrength * bassRatio * 5.0;
+                        node.vy -= (dy / dist) * pushStrength * bassRatio * 5.0;
+                    }
+
+                    node.vx *= 0.88; node.vy *= 0.88; // Viscous drag coefficients decay
+                }
+            }
+
+
+            // 3. Compute High-Performance Visual Fluid Particles System (Global blend overlay maps)
+            ctx.save();
+            ctx.globalCompositeOperation = 'lighter';
+            
+            highJuiceParticles.forEach(p => {
+                const gridX = Math.floor(p.x / spacing);
+                const gridY = Math.floor(p.y / spacing);
+
+                if (vectorFieldGrid[gridX] && vectorFieldGrid[gridX][gridY]) {
+                    const fieldNode = vectorFieldGrid[gridX][gridY];
+                    p.vx += fieldNode.vx * 0.15; p.vy += fieldNode.vy * 0.15;
+                }
+
+                p.vx *= 0.95; p.vy *= 0.95;
+                p.x += p.vx; p.y += p.vy;
+
+                // Handle loop wrap metrics
+                if (p.x < 0) p.x = canvas.width; if (p.x > canvas.width) p.x = 0;
+                if (p.y < 0) p.y = canvas.height; if (p.y > canvas.height) p.y = 0;
+
+
+                // Color tint particle arrays relative to physical velocity speeds
+                const speed = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
+                const currentHue = p.hue + (speed * 12);
+                ctx.fillStyle = `hsla(${currentHue}, 95%, 60%, ${p.alpha + speed * 0.15})`;
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.size + Math.min(speed * 0.3, 3), 0, Math.PI * 2); ctx.fill();
+            });
+            ctx.restore();
+
+            // 4. Render Active Targets Scene elements with Optional Symmetric mirrors
+            if (options.mirror) {
+                const midX = canvas.width / 2; const midY = canvas.height / 2;
+                for (let i = 0; i < 4; i++) {
+                    ctx.save(); ctx.translate(midX, midY); ctx.rotate((i * Math.PI) / 2);
+                    ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(midX, -midY); ctx.lineTo(midX, midY); ctx.closePath(); ctx.clip();
+                    ctx.translate(-midX, -midY);
+                    renderCoreSceneElements(ctx, bassRatio, trebleRatio);
+                    ctx.restore();
+                }
+            } else {
+
+                renderCoreSceneElements(ctx, bassRatio, trebleRatio);
+            }
+
+            ctx.restore(); // Terminate screen camera shake matrices
+
+            // 5. Evaluate System State Rules Computations
+            computeEcosystemMathMechanics(bassRatio, trebleRatio);
+
+            // Update overhead HUD textual data readings
+            document.getElementById('txt-score').textContent = String(coreState.score).padStart(5, '0');
+            document.getElementById('txt-combo').textContent = `x${coreState.combo.toFixed(1)}`;
+        }
+
+        function renderCoreSceneElements(targetCtx, bassPulse, treblePulse) {
+            // Draw interactive energy connection lines
+            if (pointer.active) {
+                starSeeds.forEach(n => {
+                    const dist = Math.hypot(pointer.x - n.x, pointer.y - n.y);
+                    if (dist < 280) {
+
+                        const alpha = (280 - dist) / 280 * 0.45;
+                        targetCtx.strokeStyle = `rgba(0, 255, 235, ${alpha})`;
+                        targetCtx.lineWidth = 1.5 + treblePulse * 2.5;
+                        targetCtx.beginPath(); targetCtx.moveTo(pointer.x, pointer.y); targetCtx.lineTo(n.x, n.y); targetCtx.stroke();
+                    }
+                });
+
+                dissonanceHazards.forEach(h => {
+                    const dist = Math.hypot(pointer.x - h.x, pointer.y - h.y);
+                    if (dist < 240) {
+                        const alpha = (240 - dist) / 240 * 0.45;
+                        targetCtx.strokeStyle = `rgba(255, 43, 85, ${alpha})`;
+                        targetCtx.lineWidth = 1;
+                        targetCtx.setLineDash([4, 4]);
+                        targetCtx.beginPath(); targetCtx.moveTo(pointer.x, pointer.y); targetCtx.lineTo(h.x, h.y); targetCtx.stroke();
+                        targetCtx.setLineDash([]);
+                    }
+                });
+            }
+
+
+            // Draw glowing green Star Seeds
+            starSeeds.forEach(n => {
+                n.rotAngle += n.rotSpeed;
+                const dynamicRad = n.radius * (1 + treblePulse * 0.22) + Math.sin(n.rotAngle) * 1.5;
+                targetCtx.save();
+                targetCtx.shadowBlur = 15; targetCtx.shadowColor = n.color;
+                targetCtx.fillStyle = n.color;
+                targetCtx.beginPath(); targetCtx.arc(n.x, n.y, dynamicRad, 0, Math.PI * 2); targetCtx.fill();
+                targetCtx.fillStyle = '#ffffff';
+                targetCtx.beginPath(); targetCtx.arc(n.x, n.y, dynamicRad * 0.35, 0, Math.PI * 2); targetCtx.fill();
+                targetCtx.restore();
+            });
+
+            // Draw spiky red Dissonance Nodes (Triangles)
+            dissonanceHazards.forEach(h => {
+                h.pulsePhase += 0.06;
+                const dynamicRad = h.radius * (1 + bassPulse * 0.25);
+                targetCtx.save();
+                targetCtx.shadowBlur = 15; targetCtx.shadowColor = h.color;
+
+                targetCtx.fillStyle = h.color;
+                targetCtx.beginPath();
+                const spikes = 3;
+                for (let i = 0; i < spikes; i++) {
+                    const angle = (i / spikes) * Math.PI * 2 + h.pulsePhase;
+                    const tx = h.x + Math.cos(angle) * dynamicRad;
+                    const ty = h.y + Math.sin(angle) * dynamicRad;
+                    if (i === 0) targetCtx.moveTo(tx, ty); else targetCtx.lineTo(tx, ty);
+                }
+                targetCtx.closePath(); targetCtx.fill();
+                targetCtx.restore();
+            });
+
+            // --- HIGH JUICE VESSEL HUD FIXED DIRECTLY OVER CURSOR FOCAL COORDINATES ---
+            if (pointer.active) {
+                const baselineCoreRadius = 24 * (1 + bassPulse * 0.2);
+                
+                targetCtx.save();
+                
+
+                // Real-time Elastic Squash and Stretch transformations based on movement speed vectors
+                targetCtx.translate(pointer.x, pointer.y);
+                targetCtx.rotate(pointer.angle);
+                
+                const speedScale = Math.min(pointer.speed / 25, 0.45);
+                const widthSquashX = 1.0 + speedScale;
+                const heightStretchY = 1.0 - speedScale;
+                targetCtx.scale(widthSquashX, heightStretchY);
+                
+                // Draw inner core safety ring health bar indicators
+                targetCtx.shadowBlur = 20; targetCtx.shadowColor = '#00ffeb';
+                targetCtx.strokeStyle = 'rgba(255, 255, 255, 0.12)'; targetCtx.lineWidth = 4;
+                targetCtx.beginPath(); targetCtx.arc(0, 0, baselineCoreRadius, 0, Math.PI * 2); targetCtx.stroke();
+                
+                const integrityArcPercentage = (coreState.health / 100) * Math.PI * 2;
+                targetCtx.strokeStyle = coreState.health > 40 ? '#00ffeb' : '#ff2b55';
+                targetCtx.beginPath(); targetCtx.arc(0, 0, baselineCoreRadius, -Math.PI / 2, (-Math.PI / 2) + integrityArcPercentage); targetCtx.stroke();
+
+                // Draw outer Nova Energy tracking ring meters
+
+                targetCtx.strokeStyle = 'rgba(255, 0, 222, 0.05)'; targetCtx.lineWidth = 3;
+                targetCtx.beginPath(); targetCtx.arc(0, 0, baselineCoreRadius + 8, 0, Math.PI * 2); targetCtx.stroke();
+
+                const chargeArcPercentage = (coreState.novaCharge / 100) * Math.PI * 2;
+                targetCtx.strokeStyle = '#ff00de';
+                targetCtx.beginPath(); targetCtx.arc(0, 0, baselineCoreRadius + 8, -Math.PI / 2, (-Math.PI / 2) + chargeArcPercentage); targetCtx.stroke();
+                
+                targetCtx.restore();
+
+                // Draw high fidelity circular time domain wave oscilloscope scope maps inside player cores
+                if (timeDataArray) {
+                    targetCtx.save();
+                    targetCtx.beginPath();
+                    const ticks = timeDataArray.length;
+                    const scopeBaseRad = baselineCoreRadius + 14;
+                    for (let i = 0; i < ticks; i++) {
+                        const angle = (i / ticks) * Math.PI * 2;
+                        const displacementAmplitudeShift = ((timeDataArray[i] / 128) - 1.0) * 25;
+                        const rx = pointer.x + Math.cos(angle) * (scopeBaseRad + displacementAmplitudeShift);
+
+                        const ry = pointer.y + Math.sin(angle) * (scopeBaseRad + displacementAmplitudeShift);
+                        if (i === 0) targetCtx.moveTo(rx, ry); else targetCtx.lineTo(rx, ry);
+                    }
+                    targetCtx.closePath();
+                    targetCtx.strokeStyle = 'rgba(0, 255, 235, 0.6)'; targetCtx.lineWidth = 1.5; targetCtx.stroke();
+                    targetCtx.restore();
+                }
+
+                // Orbiting readout layout overlay text rendering
+                targetCtx.save();
+                targetCtx.font = 'bold 11px monospace';
+                targetCtx.textAlign = 'center';
+                targetCtx.shadowBlur = 4; targetCtx.shadowColor = '#00ffeb';
+                
+                targetCtx.fillStyle = '#ffffff';
+                targetCtx.fillText(`SCORE: ${coreState.score}`, pointer.x, pointer.y + baselineCoreRadius + 32);
+                
+                targetCtx.fillStyle = '#ff00de';
+                targetCtx.fillText(`MULT: x${coreState.combo.toFixed(1)}`, pointer.x, pointer.y + baselineCoreRadius + 45);
+
+                
+                if (coreState.novaCharge >= 100) {
+                    targetCtx.fillStyle = '#ff00de';
+                    targetCtx.fillText("NOVA ACTIVE [SPACE]", pointer.x, pointer.y - baselineCoreRadius - 15);
+                }
+                targetCtx.restore();
+            }
+
+            // Draw Splat explosion decay particles
+            for (let i = 0; i < velocityParticles.length; i++) {
+                const p = velocityParticles[i];
+                targetCtx.fillStyle = p.color; targetCtx.globalAlpha = p.alpha;
+                targetCtx.beginPath(); targetCtx.arc(p.x, p.y, p.radius, 0, Math.PI * 2); targetCtx.fill();
+            }
+            targetCtx.globalAlpha = 1.0;
+
+            // Draw floating vector overlays texts popups
+            canvasPopTexts.forEach(t => {
+                targetCtx.save(); targetCtx.globalAlpha = t.alpha; targetCtx.fillStyle = t.color;
+
+                targetCtx.font = 'bold 12px monospace'; targetCtx.shadowBlur = 5; targetCtx.shadowColor = t.color;
+                targetCtx.fillText(t.text, t.x, t.y); targetCtx.restore();
+            });
+            targetCtx.globalAlpha = 1.0;
+        }
+
+        function computeEcosystemMathMechanics(bassPulse, treblePulse) {
+            // Decay structural tracking particle arrays
+            for (let i = velocityParticles.length - 1; i >= 0; i--) {
+                const p = velocityParticles[i]; p.x += p.vx; p.y += p.vy; p.alpha -= p.decay;
+                if (p.alpha <= 0) velocityParticles.splice(i, 1);
+            }
+            for (let i = canvasPopTexts.length - 1; i >= 0; i--) {
+                const t = canvasPopTexts[i]; t.y += t.vy; t.alpha -= 0.02;
+                if (t.alpha <= 0) canvasPopTexts.splice(i, 1);
+            }
+
+            if (pointer.active) {
+                const baselineCoreRadius = 24 * (1 + bassPulse * 0.2);
+
+
+                // Gravitational velocity displacement pull calculations applied to treble cells
+                starSeeds.forEach(n => {
+                    const dx = pointer.x - n.x; const dy = pointer.y - n.y;
+                    const dist = Math.hypot(dx, dy) || 1;
+                    if (dist < 300) {
+                        const pullFactor = ((300 - dist) / 300) * options.fluidViscosity * 4.0;
+                        n.x += (dx / dist) * pullFactor; n.y += (dy / dist) * pullFactor;
+                    }
+                });
+
+                // Homing tracking speed metrics calculations applied to bass hazard mines
+                dissonanceHazards.forEach(h => {
+                    const dx = pointer.x - h.x; const dy = pointer.y - h.y;
+                    const dist = Math.hypot(dx, dy) || 1;
+                    const speedMultiplier = h.chaseVelocity * (1 + bassPulse * 0.5);
+                    h.x += (dx / dist) * speedMultiplier; h.y += (dy / dist) * speedMultiplier;
+                });
+
+                // Extraction checking loops
+
+                for (let i = starSeeds.length - 1; i >= 0; i--) {
+                    const n = starSeeds[i];
+                    const dist = Math.hypot(pointer.x - n.x, pointer.y - n.y);
+                    if (dist < (baselineCoreRadius + n.radius + 6)) {
+                        const pointsIncrement = Math.round(n.baseScore * coreState.combo);
+                        coreState.score += pointsIncrement;
+                        coreState.combo += 0.15;
+                        coreState.health = Math.min(100, coreState.health + 4.0);
+                        coreState.novaCharge = Math.min(100, coreState.novaCharge + 10); // Increment charge vectors
+
+                        playChimeHarvestAudioFX();
+                        spawnDebrisExplosionParticles(n.x, n.y, 14, n.color);
+                        triggerFloatingTextOverlay(`+${pointsIncrement} RESONANCE HARMONY!`, n.x, n.y, n.color);
+                        starSeeds.splice(i, 1);
+                    }
+                }
+
+                // Hazard impact damage rules evaluations
+                dissonanceHazards.forEach(h => {
+
+                    const dist = Math.hypot(pointer.x - h.x, pointer.y - h.y);
+                    if (dist < (baselineCoreRadius + h.radius)) {
+                        coreState.health -= 0.6;   // Deplete health rates
+                        coreState.combo = 1.0;     // Instant drop combo chains
+                        coreState.shake = Math.max(coreState.shake, 4);
+                        if (Math.random() < 0.08) {
+                            coreState.flashAlpha = 0.2;
+                            coreState.flashHex = 'rgba(255, 43, 85, 0.35)';
+                            playDissonantImpactAudioFX();
+                            spawnDebrisExplosionParticles(h.x, h.y, 6, '#ff2b55');
+                        }
+                    }
+                });
+            }
+
+            // Check milestone criteria states
+            if (coreState.score >= 10000 && !coreState.victory && !coreState.endless) {
+                coreState.victory = true; coreState.active = false;
+                clearActiveHardwareStreams();
+
+                document.getElementById('modal-victory').classList.remove('hidden');
+            }
+            if (coreState.health <= 0) {
+                coreState.active = false; clearActiveHardwareStreams();
+                document.getElementById('modal-gameover').classList.remove('hidden');
+            }
+        }
+
+        function resetSimulationMatrix() {
+            coreState.score = 0; coreState.combo = 1.0; coreState.health = 100; coreState.novaCharge = 0;
+            coreState.active = true; coreState.victory = false; coreState.endless = false; coreState.shake = 0;
+            starSeeds = []; dissonanceHazards = []; velocityParticles = []; canvasPopTexts = [];
+            pointer.active = false;
+
+            document.getElementById('modal-gameover').classList.add('hidden');
+            document.getElementById('modal-victory').classList.add('hidden');
+            
+            resizeEngineCanvas();
+        }
+
+
+        function activateEndlessMode() {
+            document.getElementById('modal-victory').classList.add('hidden');
+            coreState.endless = true; coreState.active = true;
+        }
+
+        document.getElementById('btn-reset-go').addEventListener('click', resetSimulationMatrix);
+        document.getElementById('btn-reset-vic').addEventListener('click', resetSimulationMatrix);
+        document.getElementById('btn-endless').addEventListener('click', activateEndlessMode);
+
+        // --- System Launch Initialization ---
+        resizeEngineCanvas();
+        executeSimulationLoop();
+    </script>
+</body>
+</html>
+
